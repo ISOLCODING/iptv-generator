@@ -117,7 +117,7 @@ export default function Home() {
       {/* Header */}
       <nav className="fixed top-0 w-full z-50 bg-[#0f0f0f]/90 backdrop-blur-md border-b border-white/10 h-16 flex items-center px-6 justify-between">
         <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.location.reload()}>
-           <MonitorPlay className="w-6 h-6 text-red-600" />
+          <img src="/logo.png" alt="NobarTV Logo" className="w-8 h-8 object-contain" />
           <h1 className="text-xl font-bold tracking-tight">NobarTVGratis<span className="text-red-600">ID</span></h1>
         </div>
         
