@@ -34,10 +34,11 @@ module.exports = new class Antigravity {
      * Generates a comprehensive playlist for a specific country.
      */
     async generatePlaylistFromIptvOrg(countryCode = 'ID') {
-        const [allChannels, allStreams, allGuides] = await Promise.all([
+        const [allChannels, allStreams, allGuides, allLogos] = await Promise.all([
             this.fetchData(this.endpoints.channels, 'Channels'),
             this.fetchData(this.endpoints.streams, 'Streams'),
-            this.fetchData(this.endpoints.guides, 'Guides')
+            this.fetchData(this.endpoints.guides, 'Guides'),
+            this.fetchData(this.endpoints.logos, 'Logos')
         ]);
 
         if (!allChannels.length) {
@@ -65,6 +66,14 @@ module.exports = new class Antigravity {
             // Prefer Indonesian guide if available, or just take the first one found
             if (!guideMap.has(guide.channel) || guide.lang === 'id') {
                 guideMap.set(guide.channel, guide);
+            }
+        });
+
+        // Map: Channel ID -> Logo URL
+        const logoMap = new Map();
+        allLogos.forEach(logo => {
+            if (logo.channel) {
+                logoMap.set(logo.channel, logo.url);
             }
         });
 
@@ -108,6 +117,11 @@ module.exports = new class Antigravity {
 
             matchCount++;
             const guide = guideMap.get(channel.id);
+
+            // Assign logo from map if not present in channel object
+            if (!channel.logo) {
+                channel.logo = logoMap.get(channel.id) || "";
+            }
 
             for (const stream of channelStreams) {
                 m3u += this.formatEntry(channel, stream, guide);

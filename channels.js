@@ -62,7 +62,7 @@ const channels = [
     {
         id: "mentari_tv",
         name: "Mentari TV",
-        logo: "",
+        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Mentari_TV.svg/1200px-Mentari_TV.svg.png",
         sourceUrl: "https://app-etslive-2.vidio.com/live/8237/master.m3u8",
         headers: {
             "Referer": "https://www.vidio.com/",
