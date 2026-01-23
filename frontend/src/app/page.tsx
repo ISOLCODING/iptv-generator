@@ -77,12 +77,29 @@ export default function Home() {
       const text = await res.text();
       const parsedChannels = parseM3U(text);
       
-      setChannels(parsedChannels);
-      setFilteredChannels(parsedChannels);
+      // Deduplicate by Name (keep first occurrence)
+      const uniqueMap = new Map();
+      parsedChannels.forEach(ch => {
+        // Normalize name to avoid case sensitivity issues
+        const normalizeName = ch.name.toLowerCase().trim();
+        if (!uniqueMap.has(normalizeName)) {
+          uniqueMap.set(normalizeName, ch);
+        }
+      });
+      const uniqueChannels = Array.from(uniqueMap.values()) as Channel[];
+
+      // Sort: Put "Manual" or popular channels first if possible, otherwise alphabetical
+      // For now, simple alphabetical sort by name
+      uniqueChannels.sort((a, b) => a.name.localeCompare(b.name));
+
+      setChannels(uniqueChannels);
+      setFilteredChannels(uniqueChannels);
 
       // Extract unique groups
-      const groups = Array.from(new Set(parsedChannels.map((c) => c.group || "Uncategorized"))) as string[];
-      setCategories(["All", ...groups.sort()]);
+      const groups = Array.from(new Set(uniqueChannels.map((c) => c.group || "Uncategorized"))) as string[];
+      // Filter out empty groups and sort
+      const cleanedGroups = groups.filter(g => g).sort();
+      setCategories(["All", ...cleanedGroups]);
       
     } catch (error) {
       console.error("Failed to fetch channels", error);
