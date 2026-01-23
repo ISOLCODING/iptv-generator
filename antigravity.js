@@ -3,110 +3,115 @@ const cheerio = require('cheerio');
 
 module.exports = new class Antigravity {
     constructor() {
-        this.timeout = 10000; // Increased timeout for large files
-        this.channelsApiUrl = 'https://iptv-org.github.io/api/channels.json';
-        this.streamsApiUrl = 'https://iptv-org.github.io/api/streams.json';
+        this.timeout = 15000;
+        // Endpoints
+        this.apiBase = 'https://iptv-org.github.io/api';
+        this.endpoints = {
+            channels: `${this.apiBase}/channels.json`,
+            streams: `${this.apiBase}/streams.json`,
+            guides: `${this.apiBase}/guides.json`,
+            logos: `${this.apiBase}/logos.json`
+        };
     }
 
     /**
-     * Fetches channels from iptv-org and filters by country.
-     * @param {string} countryCode - ISO 3166-1 alpha-2 country code (e.g., 'ID').
+     * Helper to fetch data with error handling
      */
-    async fetchChannels(countryCode) {
-        console.log(`[Antigravity] Fetching channels for country: ${countryCode}...`);
+    async fetchData(url, label) {
+        console.log(`[Antigravity] Fetching ${label}...`);
         try {
-            const response = await axios.get(this.channelsApiUrl, { timeout: this.timeout });
-            const allChannels = response.data;
-            const filtered = allChannels.filter(c => c.country === countryCode);
-            console.log(`[Antigravity] Found ${filtered.length} channels for ${countryCode}.`);
-            return filtered;
-        } catch (error) {
-            console.error('[Antigravity] Failed to fetch channels:', error.message);
-            return [];
-        }
-    }
-
-    /**
-     * Fetches all streams from iptv-org.
-     */
-    async fetchStreams() {
-        console.log('[Antigravity] Fetching streams...');
-        try {
-            const response = await axios.get(this.streamsApiUrl, { timeout: this.timeout });
-            console.log(`[Antigravity] Fetched ${response.data.length} streams.`);
+            const response = await axios.get(url, { timeout: this.timeout });
+            console.log(`[Antigravity] Fetched ${response.data.length} items from ${label}.`);
             return response.data;
         } catch (error) {
-            console.error('[Antigravity] Failed to fetch streams:', error.message);
+            console.error(`[Antigravity] Failed to fetch ${label}:`, error.message);
             return [];
         }
     }
 
     /**
-     * Generates a playlist from iptv-org data for a specific country.
+     * Generates a comprehensive playlist for a specific country.
      */
     async generatePlaylistFromIptvOrg(countryCode = 'ID') {
-        const channels = await this.fetchChannels(countryCode);
-        const streams = await this.fetchStreams();
+        const [allChannels, allStreams, allGuides] = await Promise.all([
+            this.fetchData(this.endpoints.channels, 'Channels'),
+            this.fetchData(this.endpoints.streams, 'Streams'),
+            this.fetchData(this.endpoints.guides, 'Guides')
+        ]);
 
-        if (channels.length === 0 || streams.length === 0) {
-            console.error('[Antigravity] No data to process.');
-            return '#EXTM3U\n';
+        if (!allChannels.length) {
+            return '#EXTM3U\n # Error: No channels found.';
         }
 
-        // Create a map of channel ID to channel metadata for faster lookup
-        const channelMap = new Map();
-        channels.forEach(c => channelMap.set(c.id, c));
+        // Filter channels for the specific country
+        const idChannels = allChannels.filter(c => c.country === countryCode);
+        console.log(`[Antigravity] Filtered ${idChannels.length} channels for country '${countryCode}'.`);
 
-        let m3uContent = '#EXTM3U\n';
+        // Map: Channel ID -> Stream[]
+        const streamMap = new Map();
+        allStreams.forEach(stream => {
+            if (!stream.channel) return;
+            if (!streamMap.has(stream.channel)) {
+                streamMap.set(stream.channel, []);
+            }
+            streamMap.get(stream.channel).push(stream);
+        });
 
-        // Filter streams that belong to the requested channels
-        const validStreams = streams.filter(s => s.channel && channelMap.has(s.channel));
-        console.log(`[Antigravity] matched ${validStreams.length} valid streams for ${countryCode}.`);
+        // Map: Channel ID -> Guide (EPG)
+        const guideMap = new Map();
+        allGuides.forEach(guide => {
+            if (!guide.channel) return;
+            // Prefer Indonesian guide if available, or just take the first one found
+            if (!guideMap.has(guide.channel) || guide.lang === 'id') {
+                guideMap.set(guide.channel, guide);
+            }
+        });
 
-        for (const stream of validStreams) {
-            const channelInfo = channelMap.get(stream.channel);
-            m3uContent += this.formatIptvOrgLine(channelInfo, stream);
+        let m3u = '#EXTM3U\n';
+        let matchCount = 0;
+
+        for (const channel of idChannels) {
+            const channelStreams = streamMap.get(channel.id) || [];
+
+            // Only include channels with streams to ensure the playlist is functional
+            if (channelStreams.length === 0) continue;
+
+            matchCount++;
+            const guide = guideMap.get(channel.id);
+
+            for (const stream of channelStreams) {
+                m3u += this.formatEntry(channel, stream, guide);
+            }
         }
 
-        return m3uContent;
+        console.log(`[Antigravity] Generated playlist with ${matchCount} unique channels having streams.`);
+        return m3u;
     }
 
-    formatIptvOrgLine(channel, stream) {
+    formatEntry(channel, stream, guide) {
         const tvgId = channel.id;
-        const tvgName = channel.name; // sanitize?
+        const tvgName = channel.name;
         const tvgLogo = channel.logo || "";
-        const groupTitle = channel.categories && channel.categories.length > 0 ? channel.categories[0] : "Uncategorized";
-        const name = channel.name;
+        const group = channel.categories && channel.categories.length ? channel.categories[0] : "Uncategorized";
 
-        let line = `#EXTINF:-1 tvg-id="${tvgId}" tvg-name="${tvgName}" tvg-logo="${tvgLogo}" group-title="${groupTitle}",${name}\n`;
+        // Construct the EXTINF line
+        let infoLine = `#EXTINF:-1 tvg-id="${tvgId}" tvg-name="${tvgName}" tvg-logo="${tvgLogo}" group-title="${group}"`;
 
-        // Add headers if present in the stream data
-        if (stream.user_agent) {
-            line += `#EXTVLCOPT:http-user-agent=${stream.user_agent}\n`;
-        }
-        if (stream.referrer) {
-            line += `#EXTVLCOPT:http-referrer=${stream.referrer}\n`;
-        }
+        infoLine += `,${channel.name}`;
 
-        line += `${stream.url}\n`;
-        return line;
+        // Add User-Agent and Referrer headers if present
+        let headers = [];
+        if (stream.user_agent) headers.push(`#EXTVLCOPT:http-user-agent=${stream.user_agent}`);
+        if (stream.referrer) headers.push(`#EXTVLCOPT:http-referrer=${stream.referrer}`);
+
+        return `${infoLine}\n${headers.join('\n')}${headers.length ? '\n' : ''}${stream.url}\n`;
     }
 
-    // --- Legacy / Existing methods preserved below (optional usage) ---
-
-    async processChannel(channel) {
-        // ... (Existing implementation if needed for hybrid approach)
-        return null;
-    }
-
-    // Keeping formatM3uLine for backward compatibility if mixed
-    formatM3uLine(channel, streamUrl) {
-        if (!streamUrl) return "";
-        return `#EXTINF:-1 tvg-id="${channel.id}" tvg-name="${channel.name}" tvg-logo="${channel.logo}" group-title="${channel.group}",${channel.name}\n${streamUrl}`;
-    }
-
-    async generatePlaylist(channels) {
-        // ... (Legacy generate)
-        return "";
-    }
+    // --- Legacy methods kept for compatibility ---
+    async fetchChannels(countryCode) { return []; }
+    async fetchStreams() { return []; }
+    formatIptvOrgLine(channel, stream) { return ""; }
+    async processChannel(channel) { return null; }
+    formatM3uLine(channel, streamUrl) { return ""; }
+    async generatePlaylist(channels) { return ""; }
 }
