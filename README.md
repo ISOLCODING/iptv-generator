@@ -61,6 +61,18 @@ Berikut adalah beberapa saluran utama yang sudah dikurasi dan diperbaiki link st
 
 Aplikasi ini hanya **mengagregasi tautan** yang tersedia secara publik di internet. Kami tidak menghosting konten apapun. Ketersediaan saluran sepenuhnya tergantung pada penyedia layanan streaming aslinya.
 
+## 🌐 Deployment (Frontend Web)
+
+Web Player (Next.js) yang ada di folder `frontend` dirancang untuk di-deploy ke **Vercel**:
+
+1.  Push kode terbaru ke GitHub.
+2.  Buka [Vercel Dashboard](https://vercel.com/new).
+3.  Import repository `iptv-generator`.
+4.  🚧 **PENTING**: Pada bagian **Root Directory**, ubah (Edit) menjadi `frontend`.
+5.  Klik **Deploy**.
+
+Aplikasi web Anda akan online dan otomatis mengambil playlist terbaru dari GitHub Pages.
+
 ## 📄 Lisensi
 
 MIT
