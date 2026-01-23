@@ -1,5 +1,6 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
+const manualChannels = require('./channels');
 
 module.exports = new class Antigravity {
     constructor() {
@@ -69,8 +70,37 @@ module.exports = new class Antigravity {
 
         let m3u = '#EXTM3U\n';
         let matchCount = 0;
+        const processedIds = new Set();
 
+        // 1. Process Manual Channels (Priority)
+        console.log(`[Antigravity] Merging ${manualChannels.length} manual channel configs...`);
+        for (const manual of manualChannels) {
+            if (!manual.sourceUrl) continue;
+
+            const apiChannel = idChannels.find(c => c.id === manual.id) || {};
+            const combinedChannel = {
+                id: manual.id,
+                name: manual.name,
+                logo: manual.logo || apiChannel.logo || "",
+                categories: apiChannel.categories || ["General"]
+            };
+
+            const streamObj = {
+                url: manual.sourceUrl,
+                user_agent: manual.headers ? manual.headers["User-Agent"] : undefined,
+                referrer: manual.headers ? manual.headers["Referer"] : undefined
+            };
+
+            const guide = guideMap.get(manual.id);
+            m3u += this.formatEntry(combinedChannel, streamObj, guide);
+            processedIds.add(manual.id);
+            matchCount++;
+        }
+
+        // 2. Process API Channels (long-tail)
         for (const channel of idChannels) {
+            if (processedIds.has(channel.id)) continue; // Already added manually
+
             const channelStreams = streamMap.get(channel.id) || [];
 
             // Only include channels with streams to ensure the playlist is functional

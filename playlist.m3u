@@ -1,4 +1,38 @@
 #EXTM3U
+#EXTINF:-1 tvg-id="trans7" tvg-name="Trans 7" tvg-logo="https://upload.wikimedia.org/wikipedia/id/archive/6/6e/20210609071039%21Logo_Trans7_2013-sekarang.png" group-title="General",Trans 7
+#EXTVLCOPT:http-user-agent=Mozilla/5.0
+https://video.detik.com/trans7/smil:trans7.smil/playlist.m3u8
+#EXTINF:-1 tvg-id="transtv" tvg-name="Trans TV" tvg-logo="https://upload.wikimedia.org/wikipedia/id/archive/8/87/20220610052745%21Logo_Trans_TV_2013-sekarang.png" group-title="General",Trans TV
+#EXTVLCOPT:http-user-agent=Mozilla/5.0
+https://video.detik.com/transtv/smil:transtv.smil/playlist.m3u8
+#EXTINF:-1 tvg-id="cnn_id" tvg-name="CNN Indonesia" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/CNN_Indonesia_Logo.svg/1200px-CNN_Indonesia_Logo.svg.png" group-title="General",CNN Indonesia
+#EXTVLCOPT:http-user-agent=Mozilla/5.0
+https://live.cnnindonesia.com/livecnn/smil:cnntv.smil/playlist.m3u8
+#EXTINF:-1 tvg-id="cnbc_id" tvg-name="CNBC Indonesia" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/CNBC_Indonesia_logo.svg/2560px-CNBC_Indonesia_logo.svg.png" group-title="General",CNBC Indonesia
+#EXTVLCOPT:http-user-agent=Mozilla/5.0
+https://live.cnbcindonesia.com/livecnbc/smil:cnbctv.smil/playlist.m3u8
+#EXTINF:-1 tvg-id="mentari_tv" tvg-name="Mentari TV" tvg-logo="" group-title="General",Mentari TV
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
+#EXTVLCOPT:http-referrer=https://www.vidio.com/
+https://app-etslive-2.vidio.com/live/8237/master.m3u8
+#EXTINF:-1 tvg-id="metrotv" tvg-name="Metro TV" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Metro_TV_2020.svg/1200px-Metro_TV_2020.svg.png" group-title="General",Metro TV
+#EXTVLCOPT:http-user-agent=Mozilla/5.0
+https://edge.medcom.id/live-edge/smil:metro.smil/playlist.m3u8
+#EXTINF:-1 tvg-id="antv" tvg-name="ANTV" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/ANTV_2013-sekarang.svg/1200px-ANTV_2013-sekarang.svg.png" group-title="General",ANTV
+#EXTVLCOPT:http-user-agent=Mozilla/5.0
+https://op-group1-swiftservehd-1.dens.tv/s/s07/index.m3u8
+#EXTINF:-1 tvg-id="tvone" tvg-name="TVOne" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/TvOne_2008-sekarang.svg/1200px-TvOne_2008-sekarang.svg.png" group-title="General",TVOne
+#EXTVLCOPT:http-user-agent=Mozilla/5.0
+https://op-group1-swiftservehd-1.dens.tv/h/h40/index.m3u8
+#EXTINF:-1 tvg-id="kompas" tvg-name="Kompas TV" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Kompas_TV_2018-sekarang.svg/1200px-Kompas_TV_2018-sekarang.svg.png" group-title="General",Kompas TV
+#EXTVLCOPT:http-user-agent=Mozilla/5.0
+https://op-group1-swiftservehd-1.dens.tv/s/s104/index.m3u8
+#EXTINF:-1 tvg-id="rtv" tvg-name="RTV" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/RTV_2014-sekarang.svg/1200px-RTV_2014-sekarang.svg.png" group-title="General",RTV
+#EXTVLCOPT:http-user-agent=Mozilla/5.0
+https://op-group1-swiftservehd-1.dens.tv/h/h10/index.m3u8
+#EXTINF:-1 tvg-id="tvri_nasional" tvg-name="TVRI Nasional" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Logo_TVRI_2019.svg/1200px-Logo_TVRI_2019.svg.png" group-title="General",TVRI Nasional
+#EXTVLCOPT:http-user-agent=Mozilla/5.0
+https://ott-balancer.tvri.go.id/live/eds/Nasional/hls/Nasional.m3u8
 #EXTINF:-1 tvg-id="AKTV.id" tvg-name="AKTV" tvg-logo="" group-title="general",AKTV
 https://e.siar.us/live/aktv.m3u8
 #EXTINF:-1 tvg-id="AlImanTV.id" tvg-name="Al-Iman TV" tvg-logo="" group-title="religious",Al-Iman TV
