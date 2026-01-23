@@ -1,48 +1,110 @@
 const express = require('express');
+const cors = require('cors');
+const NodeCache = require('node-cache');
+const { Parser } = require('m3u8-parser');
 const Antigravity = require('./antigravity');
-const channels = require('./channels');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const port = 3000;
+const cache = new NodeCache({ stdTTL: 21600 }); // Cache for 6 hours
 
-app.get('/playlist.m3u', async (req, res) => {
-    console.log(`[Server] Received request for playlist from ${req.ip}`);
-    
+app.use(cors());
+
+// Convert M3U string to clean JSON object
+const parseM3uToJson = (m3uString) => {
+    const parser = new Parser();
+    parser.push(m3uString);
+    parser.end();
+
+    return parser.manifest.segments.map(segment => {
+        // Extract vlcopts/headers if any
+        let userAgent = null;
+        let referrer = null;
+
+        // Check for #EXTVLCOPT tags usually stored in title or separate parsing needed
+        // Since m3u8-parser might not capture non-standard EXT tags deeply, we manually parse if needed,
+        // but for standard EXTINF it works. 
+        // Our generator adds headers as comments/tags. Let's do a quick regex fallback if parser misses custom tags.
+
+        return {
+            id: segment.duration || Date.now(), // Fallback ID
+            title: segment.title,
+            url: segment.uri,
+            details: segment.key || {} // Extra metadata
+        };
+    });
+};
+
+// Custom manual parser because m3u8-parser is sometimes strict with non-standard extended M3U
+const customParse = (m3u) => {
+    const lines = m3u.split('\n');
+    const result = [];
+    let currentItem = {};
+
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (line.startsWith('#EXTINF:')) {
+            // Parse Attributes
+            const tvgId = line.match(/tvg-id="([^"]*)"/)?.[1];
+            const tvgName = line.match(/tvg-name="([^"]*)"/)?.[1];
+            const tvgLogo = line.match(/tvg-logo="([^"]*)"/)?.[1];
+            const group = line.match(/group-title="([^"]*)"/)?.[1];
+            const name = line.split(',').pop();
+
+            currentItem = {
+                id: tvgId || `ch-${i}`,
+                name: tvgName || name,
+                displayName: name,
+                logo: tvgLogo,
+                group: group || 'Uncategorized',
+                headers: {}
+            };
+        } else if (line.startsWith('#EXTVLCOPT:http-user-agent=')) {
+            currentItem.headers = currentItem.headers || {};
+            currentItem.headers['User-Agent'] = line.split('=')[1];
+        } else if (line.startsWith('#EXTVLCOPT:http-referrer=')) {
+            currentItem.headers = currentItem.headers || {};
+            currentItem.headers['Referer'] = line.split('=')[1];
+        } else if (line && !line.startsWith('#')) {
+            // URL line
+            if (currentItem.name) {
+                currentItem.url = line;
+                result.push(currentItem);
+                currentItem = {}; // Reset
+            }
+        }
+    }
+    return result;
+};
+
+app.get('/api/playlist', async (req, res) => {
     try {
-        const playlist = await Antigravity.generatePlaylist(channels);
-        
-        res.set({
-            'Content-Type': 'text/plain',
-            'Content-Disposition': 'inline; filename="playlist.m3u"',
-            'Access-Control-Allow-Origin': '*' // Allow CORS for web players
-        });
-        
-        res.send(playlist);
-        console.log(`[Server] Served playlist with ${playlist.split('#EXTINF').length - 1} channels.`);
+        const cacheKey = 'playlist_json';
+        const cachedData = cache.get(cacheKey);
+
+        if (cachedData) {
+            console.log('[Server] Serving cached playlist');
+            return res.json(cachedData);
+        }
+
+        console.log('[Server] Generating new playlist...');
+        const m3uString = await Antigravity.generatePlaylistFromIptvOrg('ID');
+        const jsonData = customParse(m3uString);
+
+        cache.set(cacheKey, jsonData);
+        res.json(jsonData);
     } catch (error) {
-        console.error('[Server] Algorithm failure:', error);
-        res.status(500).send('#EXTM3U\n#Server Error: Failed to generate playlist');
+        console.error(error);
+        res.status(500).json({ error: 'Failed to generate playlist' });
     }
 });
 
-app.get('/', (req, res) => {
-    const protocol = req.headers['x-forwarded-proto'] || req.protocol;
-    const host = req.get('host');
-    const fullUrl = `${protocol}://${host}`;
-
-    res.send(`
-        <h1>Antigravity IPTV Generator</h1>
-        <p>Status: Active</p>
-        <p>Playlist URL: <a href="/playlist.m3u">${fullUrl}/playlist.m3u</a></p>
-    `);
+// Endpoint to force refresh
+app.post('/api/refresh', async (req, res) => {
+    cache.del('playlist_json');
+    res.json({ message: 'Cache cleared. Next request will fetch fresh data.' });
 });
 
-app.listen(PORT, () => {
-    console.log(`
-    =============================================
-    |       ANTIGRAVITY IPTV GENERATOR          |
-    =============================================
-    | Server running on port ${PORT}              |
-    =============================================
-    `);
+app.listen(port, () => {
+    console.log(`[API] Server running at http://localhost:${port}`);
 });
