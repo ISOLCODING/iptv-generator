@@ -1,0 +1,9 @@
+#EXTM3U
+#EXTINF:-1 tvg-id="metrotv" tvg-name="Metro TV" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Metro_TV_2020.svg/1200px-Metro_TV_2020.svg.png" group-title="Media Group",Metro TV
+https://b2cdan1-metrotv-live.cdn.jmn.net.id/hls/metrotv/playlist.m3u8
+#EXTINF:-1 tvg-id="tvone" tvg-name="TVOne" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/TvOne_2008-sekarang.svg/1200px-TvOne_2008-sekarang.svg.png" group-title="VIVA",TVOne
+https://stream.tvonenews.com/live/tvone/playlist.m3u8
+#EXTINF:-1 tvg-id="kompas" tvg-name="Kompas TV" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Kompas_TV_2018-sekarang.svg/1200px-Kompas_TV_2018-sekarang.svg.png" group-title="KG Media",Kompas TV
+https://ad-site.kompas.id/eds/live/kompastv.m3u8
+#EXTINF:-1 tvg-id="tvri_nasional" tvg-name="TVRI Nasional" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Logo_TVRI_2019.svg/1200px-Logo_TVRI_2019.svg.png" group-title="TVRI",TVRI Nasional
+http://stream.tvri.co.id/live/TVRI_Nasional/playlist.m3u8

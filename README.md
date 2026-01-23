@@ -9,7 +9,21 @@ A dynamic Node.js script to generate IPTV playlists (`.m3u`) for Indonesian digi
 - **Modular Design**: Easy to update channel configurations and scraping strategies.
 
 ## 🛠️ Usage
+### Option 1: GitHub Pages (Automatic & Free)
+This repository is configured to automatically generate the playlist every 6 hours using GitHub Actions.
 
+1.  **Playlist URL**:
+    ```
+    https://<YOUR_GITHUB_USERNAME>.github.io/<REPO_NAME>/playlist.m3u
+    ```
+    *(Replace `<YOUR_GITHUB_USERNAME>` and `<REPO_NAME>` with your actual details)*
+
+2.  **How to Watch**:
+    - Open your IPTV Player (OTT Navigator, TiviMate, VLC, etc.).
+    - Add a new playlist.
+    - Paste the URL above.
+
+### Option 2: Run Locally
 1.  **Clone the repository**:
     ```bash
     git clone https://github.com/your-username/antigravity-iptv.git
@@ -23,7 +37,7 @@ A dynamic Node.js script to generate IPTV playlists (`.m3u`) for Indonesian digi
 
 3.  **Run the generator**:
     ```bash
-    node server.js
+    npm start
     ```
 
 4.  **Use in IPTV Player**:
