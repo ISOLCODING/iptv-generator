@@ -9,6 +9,7 @@ import "@vidstack/react/player/styles/default/theme.css";
 import "@vidstack/react/player/styles/default/layouts/video.css";
 import { MediaPlayer, MediaProvider } from "@vidstack/react";
 import { DefaultVideoLayout, defaultLayoutIcons } from "@vidstack/react/player/layouts/default";
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import {
   Search,
   MonitorPlay,
@@ -196,10 +197,43 @@ export default function HomeContent() {
     return filteredChannels.slice(0, displayCount);
   }, [filteredChannels, displayCount]);
 
+    // --- URL Sync Logic ---
+    const searchParams = useSearchParams();
+    const router = useRouter();
+    const pathname = usePathname();
+
+    useEffect(() => {
+        if (channels.length === 0) return;
+
+        const channelParam = searchParams.get('channel');
+        if (channelParam) {
+            // Decode URI component to handle spaces/special chars
+            const decodedParam = decodeURIComponent(channelParam).toLowerCase();
+            const found = channels.find(c =>
+                c.name.toLowerCase() === decodedParam ||
+                c.id === channelParam ||
+                c.name.toLowerCase().includes(decodedParam) // Fuzzy match fallback
+            );
+
+            if (found) {
+                setSelectedChannel(found);
+                // Ensure we scroll to top only if it's an initial load or direct navigation
+                if (!selectedChannel) {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            }
+        }
+    }, [searchParams, channels]);
+
   const handleChannelSelect = (channel: Channel) => {
     setSelectedChannel(channel);
     addToHistory(channel.id);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Update URL without full reload (shallow routing)
+      const params = new URLSearchParams(searchParams.toString());
+      params.set('channel', channel.name);
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
   const loadMore = () => {

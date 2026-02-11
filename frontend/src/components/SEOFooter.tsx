@@ -5,17 +5,16 @@ export default function SEOFooter() {
         <div>
           <h3 className="text-white font-bold text-lg mb-4">NobarTV PRO</h3>
           <p className="text-sm leading-relaxed">
-            Platform streaming TV online Indonesia gratis dan terlengkap. Nikmati siaran langsung channel lokal favoritmu seperti RCTI, SCTV, Indosiar, Trans7, dan TransTV dengan kualitas HD tanpa buffering.
+                      Platform streaming TV online Indonesia gratis dan terlengkap. Nikmati siaran langsung channel lokal favoritmu seperti Garuda, Kompas, Trans7, dan TransTV dengan kualitas HD tanpa buffering.
           </p>
         </div>
         <div>
           <h3 className="text-white font-bold text-lg mb-4">Channel Populer</h3>
           <ul className="space-y-2 text-sm">
-            <li><a href="#" className="hover:text-blue-500 transition-colors">Nonton Garuda Live</a></li>
-            <li><a href="#" className="hover:text-blue-500 transition-colors">Streaming Kompas</a></li>
-            <li><a href="#" className="hover:text-blue-500 transition-colors">Tran7 Live</a></li>
-            <li><a href="#" className="hover:text-blue-500 transition-colors">TransTV Live</a></li>
-            <li><a href="#" className="hover:text-blue-500 transition-colors">MNCTV Live</a></li>
+                      <li><a href="/?channel=Garuda" className="hover:text-blue-500 transition-colors">Nonton Garuda Live</a></li>
+                      <li><a href="/?channel=Kompas" className="hover:text-blue-500 transition-colors">Streaming Kompas</a></li>
+                      <li><a href="/?channel=Trans7" className="hover:text-blue-500 transition-colors">Trans7 Live</a></li>
+                      <li><a href="/?channel=Trans%20TV" className="hover:text-blue-500 transition-colors">TransTV Live</a></li>          
           </ul>
         </div>
         <div>
