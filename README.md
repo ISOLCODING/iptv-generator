@@ -19,14 +19,19 @@ NobarTV PRO adalah platform streaming TV Indonesia modern yang menggabungkan kem
 Sekarang Anda bisa menggunakan playlist NobarTV PRO langsung di aplikasi Android TV atau Smartphone favorit Anda.
 
 ### 🔗 URL Playlist Anda:
-Gunakan URL permanen di bawah ini untuk aplikasi IPTV Anda:
-`https://nobartvgratis.afasya.com/api/playlist`
+Gunakan URL di bawah ini untuk aplikasi IPTV Anda:
+
+1. **Link Utama (Vercel - Dengan Proxy):**
+   `https://nobartvgratis.afasya.com/api/playlist` (Terbaik untuk Browser/Web)
+
+2. **Link Backup (GitHub - Statis):**
+   `https://raw.githubusercontent.com/ISOLCODING/iptv-generator/master/playlist.m3u` (Terbaik untuk TiviMate/OTT Navigator)
 
 ### Langkah-langkah:
 1.  Buka aplikasi **TiviMate**, **OTT Navigator**, atau **VLC**.
 2.  Pilih **Add Playlist** atau **New Playlist**.
 3.  Pilih tipe **M3U Playlist**.
-4.  Masukkan URL di atas.
+4.  Masukkan salah satu URL di atas.
 5.  Selesai! Daftar channel Indonesia akan otomatis muncul lengkap dengan Logo dan Kategori.
 
 ---
