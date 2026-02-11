@@ -1,6 +1,6 @@
 "use client";
 
-import dynamic from 'next/dynamic';
+import Image from 'next/image';
 import { useEffect, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import SEOFooter from "./SEOFooter";
@@ -56,6 +56,7 @@ export default function HomeContent() {
   const [history, setHistory] = useState<string[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMinimized, setIsMinimized] = useState(false);
+    const [hasLoaded, setHasLoaded] = useState(false);
   
   // Carousel State
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
@@ -66,6 +67,7 @@ export default function HomeContent() {
   // --- Persistence ---
   useEffect(() => {
     try {
+        setHasLoaded(true); 
       const savedFavs = localStorage.getItem("favorites");
       if (savedFavs) setFavorites(JSON.parse(savedFavs));
 
@@ -241,7 +243,7 @@ export default function HomeContent() {
           >
             <div className="relative w-10 h-10">
               <div className="absolute inset-0 bg-blue-600 blur-lg opacity-20 group-hover:opacity-50 transition-opacity"></div>
-              <img src="/logo.png" alt="Logo" className="relative w-full h-full object-contain logo-glow" />
+                          <Image src="/logo.png" alt="Logo" width={40} height={40} priority className="relative w-full h-full object-contain logo-glow" />
             </div>
             <h1 className="text-2xl font-black tracking-tighter text-slate-900">
               NobarTV<span className="text-blue-600">PRO</span>
@@ -427,18 +429,26 @@ export default function HomeContent() {
               >
                   {/* Carousel Images */}
                   <AnimatePresence mode="popLayout">
-                    <motion.img 
+                                      <motion.div
                       key={currentHeroIndex}
-                      src={HERO_IMAGES[currentHeroIndex]}
-                      initial={{ opacity: 0, scale: 1.1 }}
+                                          initial={{ opacity: hasLoaded ? 0 : 1, scale: hasLoaded ? 1.1 : 1 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0 }}
                       transition={{ duration: 1.5 }}
-                      className="absolute inset-0 w-full h-full object-cover"
-                    />
+                                          className="absolute inset-0 w-full h-full"
+                                      >
+                                          <Image
+                                              src={HERO_IMAGES[currentHeroIndex]}
+                                              alt="Hero Banner"
+                                              fill
+                                              priority={true}
+                                              className="object-cover"
+                                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 100vw"
+                                          />
+                                      </motion.div>
                   </AnimatePresence>
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent" />
+                                  <div className="absolute inset-0 bg-linear-to-t from-slate-900/90 via-slate-900/30 to-transparent" />
                   
                   {/* Dots Indicator */}
                   <div className="absolute bottom-6 right-6 lg:right-12 flex gap-2 z-20">
@@ -523,7 +533,7 @@ export default function HomeContent() {
                   </div>
 
                   {/* Hover UI */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
+                        <div className="absolute inset-0 bg-linear-to-t from-slate-900/90 via-slate-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
 
                   <div className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0">
                     <button
