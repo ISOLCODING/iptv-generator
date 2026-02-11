@@ -343,7 +343,7 @@ function HomeContent() {
                     </button>
                     <button
                       onClick={() => { setSelectedChannel(null); setIsMinimized(false); }}
-                      className="p-3 bg-black/40 hover:bg-red-600 transition-all rounded-full backdrop-blur-xl border border-white/10 text-white"
+                      className="p-3 bg-black/40 hover:bg-slate-700 transition-all rounded-full backdrop-blur-xl border border-white/10 text-white"
                     >
                       <X className="w-4 h-4" />
                     </button>
