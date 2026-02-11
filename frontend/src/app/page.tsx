@@ -16,14 +16,13 @@ import {
   Heart,
   History,
   Tv,
-  Radio,
   Menu,
   Play,
-  Star,
   ChevronRight,
   Info,
   Minimize2,
-  Maximize2
+  Maximize2,
+  ChevronDown
 } from "lucide-react";
 
 interface Channel {
@@ -36,6 +35,16 @@ interface Channel {
   referrer?: string;
 }
 
+const HERO_IMAGES = [
+  "https://images.unsplash.com/photo-1593784991095-a205069470b6?auto=format&fit=crop&q=80&w=2000",
+  "https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?auto=format&fit=crop&q=80&w=2000",
+  "https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?auto=format&fit=crop&q=80&w=2000",
+  "https://images.unsplash.com/photo-1626379953822-baec19c3accd?auto=format&fit=crop&q=80&w=2000"
+];
+
+const INITIAL_ITEMS_TO_SHOW = 24;
+const ITEMS_PER_LOAD = 24;
+
 function HomeContent() {
   const [channels, setChannels] = useState<Channel[]>([]);
   const [selectedChannel, setSelectedChannel] = useState<Channel | null>(null);
@@ -47,13 +56,31 @@ function HomeContent() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMinimized, setIsMinimized] = useState(false);
 
+  // Carousel State
+  const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
+
+  // Pagination State
+  const [displayCount, setDisplayCount] = useState(INITIAL_ITEMS_TO_SHOW);
+
   // --- Persistence ---
   useEffect(() => {
-    const savedFavs = localStorage.getItem("favorites");
-    if (savedFavs) setFavorites(JSON.parse(savedFavs));
+    try {
+      const savedFavs = localStorage.getItem("favorites");
+      if (savedFavs) setFavorites(JSON.parse(savedFavs));
 
-    const savedHistory = localStorage.getItem("history");
-    if (savedHistory) setHistory(JSON.parse(savedHistory));
+      const savedHistory = localStorage.getItem("history");
+      if (savedHistory) setHistory(JSON.parse(savedHistory));
+    } catch (e) {
+      console.error("Local storage error", e);
+    }
+  }, []);
+
+  // --- Carousel Logic ---
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentHeroIndex((prev) => (prev + 1) % HERO_IMAGES.length);
+    }, 5000);
+    return () => clearInterval(timer);
   }, []);
 
   const toggleFavorite = (e: React.MouseEvent, channelId: string) => {
@@ -157,33 +184,24 @@ function HomeContent() {
     return result;
   }, [channels, selectedCategory, search, favorites, history]);
 
+  // Reset pagination when category/search changes
+  useEffect(() => {
+    setDisplayCount(INITIAL_ITEMS_TO_SHOW);
+  }, [selectedCategory, search]);
+
+  const visibleChannels = useMemo(() => {
+    return filteredChannels.slice(0, displayCount);
+  }, [filteredChannels, displayCount]);
+
   const handleChannelSelect = (channel: Channel) => {
     setSelectedChannel(channel);
     addToHistory(channel.id);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // --- Animation Variants ---
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: 0.05 }
-    }
-  } as const;
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    show: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: "spring",
-        stiffness: 260,
-        damping: 20
-      }
-    }
-  } as const;
+  const loadMore = () => {
+    setDisplayCount(prev => prev + ITEMS_PER_LOAD);
+  };
 
   return (
     <main className="min-h-screen bg-background text-slate-900 selection:bg-blue-600/30">
@@ -387,34 +405,72 @@ function HomeContent() {
                 )}
               </motion.div>
             ) : (
-              /* Spotlight / Hero like Vidio */
+                /* Hero Carousel */
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="relative w-full h-[400px] mb-12 rounded-[3rem] overflow-hidden group cursor-pointer"
-              >
-                <img src="https://images.unsplash.com/photo-1593784991095-a205069470b6?auto=format&fit=crop&q=80&w=2000" className="absolute inset-0 w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-1000" />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent" />
-                <div className="absolute bottom-12 left-6 lg:left-12 max-w-2xl px-4 lg:px-0">
-                  <h2 className="text-4xl lg:text-6xl font-black mb-4 tracking-tighter leading-tight text-white">Nonton TV Sat Gak Pake Ribet.</h2>
-                  <p className="text-lg lg:text-xl text-slate-200 mb-8 font-medium">Banyak channel lokal dan internasional terbanyak di kelasnya. Cobain NobarTV PRO sekarang!</p>
-                  <div className="flex gap-4">
-                    <button className="bg-blue-600 hover:bg-blue-700 px-10 py-4 rounded-2xl font-black flex items-center gap-3 transition-all shadow-2xl shadow-blue-600/30 text-white">
-                      <MonitorPlay className="w-6 h-6" /> MULAI NONTON
-                    </button>
+                  className="relative w-full h-[400px] mb-12 rounded-[3rem] overflow-hidden group shadow-2xl shadow-blue-900/10"
+                >
+                  {/* Carousel Images */}
+                  <AnimatePresence mode="popLayout">
+                    <motion.img
+                      key={currentHeroIndex}
+                      src={HERO_IMAGES[currentHeroIndex]}
+                      initial={{ opacity: 0, scale: 1.1 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 1.5 }}
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                  </AnimatePresence>
+
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent" />
+
+                  {/* Dots Indicator */}
+                  <div className="absolute bottom-6 right-6 lg:right-12 flex gap-2 z-20">
+                    {HERO_IMAGES.map((_, idx) => (
+                      <div
+                        key={idx}
+                        className={`w-2 h-2 rounded-full transition-all duration-300 ${idx === currentHeroIndex ? 'bg-blue-600 w-8' : 'bg-white/50'}`}
+                      />
+                    ))}
                   </div>
-                </div>
+
+                  <div className="absolute bottom-12 left-6 lg:left-12 max-w-2xl px-4 lg:px-0 z-10">
+                    <motion.div
+                      key={`text-${currentHeroIndex}`}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2 }}
+                    >
+                      <h2 className="text-4xl lg:text-6xl font-black mb-4 tracking-tighter leading-tight text-white drop-shadow-lg">
+                        Nonton TV Sat Set <br /> <span className="text-blue-400">Gak Pake Ribet.</span>
+                      </h2>
+                      <p className="text-lg lg:text-xl text-slate-100 mb-8 font-medium drop-shadow-md max-w-lg">
+                        Nikmati ribuan channel premium lokal dan mancanegara dengan kualitas Full HD tanpa buffering.
+                      </p>
+                      <div className="flex gap-4">
+                        <button className="bg-blue-600 hover:bg-blue-700 px-10 py-4 rounded-2xl font-black flex items-center gap-3 transition-all shadow-2xl shadow-blue-600/30 text-white hover:scale-105 active:scale-95">
+                          <MonitorPlay className="w-6 h-6" /> MULAI NONTON
+                        </button>
+                      </div>
+                    </motion.div>
+                  </div>
               </motion.div>
             )}
           </AnimatePresence>
 
           {/* Channels Grid Section */}
-          <div className="flex items-center justify-between mb-8 px-2">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 px-2 gap-4">
             <div>
               <h2 className="text-2xl font-black flex items-center gap-3 tracking-tight lowercase first-letter:uppercase">
                 <span className="w-2 h-8 bg-blue-600 rounded-full"></span>
                 {selectedCategory} <span className="text-slate-400 font-medium tracking-normal text-lg">({filteredChannels.length})</span>
               </h2>
+            </div>
+
+            <div className="text-sm text-slate-500 font-medium">
+              Menampilkan {Math.min(displayCount, filteredChannels.length)} dari {filteredChannels.length} channel
             </div>
           </div>
 
@@ -424,7 +480,7 @@ function HomeContent() {
                 <div key={i} className="aspect-video rounded-[2.5rem] bg-slate-100 animate-pulse border border-slate-200" />
               ))
             ) : (
-              filteredChannels.map((channel, idx) => (
+                visibleChannels.map((channel, idx) => (
                 <motion.div
                   key={channel.id}
                   initial={{ opacity: 0, y: 30 }}
@@ -433,7 +489,7 @@ function HomeContent() {
                     type: "spring",
                     stiffness: 260,
                     damping: 20,
-                    delay: Math.min(idx * 0.05, 0.5)
+                    delay: 0.1
                   }}
                   onClick={() => handleChannelSelect(channel)}
                   className="group premium-card relative aspect-video rounded-[2.5rem] cursor-pointer"
@@ -445,6 +501,7 @@ function HomeContent() {
                         src={channel.logo}
                         alt={channel.name}
                         className="w-full h-full object-contain filter grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700"
+                          loading="lazy"
                       />
                     ) : (
                       <span className="text-5xl font-black text-slate-100 group-hover:text-blue-600/20 transition-colors uppercase">{channel.name.substring(0, 2)}</span>
@@ -477,6 +534,19 @@ function HomeContent() {
               ))
             )}
           </div>
+
+          {/* Load More Button */}
+          {!loading && displayCount < filteredChannels.length && (
+            <div className="flex justify-center mt-12 mb-20">
+              <button
+                onClick={loadMore}
+                className="group px-8 py-4 bg-white border border-slate-200 text-slate-600 font-bold rounded-2xl hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all shadow-sm hover:shadow-xl hover:shadow-blue-600/20 flex items-center gap-3"
+              >
+                Muat Lebih Banyak
+                <ChevronDown className="w-5 h-5 group-hover:animate-bounce" />
+              </button>
+            </div>
+          )}
 
           {/* Empty State */}
           {!loading && filteredChannels.length === 0 && (
