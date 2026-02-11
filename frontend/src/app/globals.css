@@ -11,11 +11,6 @@
     /* Blue 600 */
     --accent-glow: rgba(37, 99, 235, 0.4);
     --border-light: rgba(226, 232, 240, 0.8);
-/* Vidstack Player Overrides */
-  --media-brand: var(--accent);
-  --media-focus-ring-color: var(--accent);
-  --media-tooltip-bg: var(--foreground);
-  --media-tooltip-color: var(--background);
 }
 
 @theme inline {
