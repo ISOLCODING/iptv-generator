@@ -4,7 +4,7 @@ const channels = [
         id: "trans7",
         name: "Trans 7",
         logo: "https://upload.wikimedia.org/wikipedia/id/archive/6/6e/20210609071039%21Logo_Trans7_2013-sekarang.png",
-        sourceUrl: "https://video.detik.com/trans7/smil:trans7.smil/playlist.m3u8",
+        sourceUrl: "https://video.detik.com/trans7/smil:trans7.smil/index.m3u8",
         headers: {
             "User-Agent": "Mozilla/5.0"
         }

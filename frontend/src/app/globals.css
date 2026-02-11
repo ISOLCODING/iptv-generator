@@ -1,8 +1,11 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --sidebar-bg: rgba(20, 20, 20, 0.7);
+  --card-bg: rgba(30, 30, 30, 0.5);
+  --accent: #E50914; /* Netflix Red-ish */
 }
 
 @theme inline {
@@ -12,15 +15,52 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+body {
+  background-color: var(--background);
+  background-image: 
+    radial-gradient(circle at 15% 50%, rgba(229, 9, 20, 0.08), transparent 25%),
+    radial-gradient(circle at 85% 30%, rgba(50, 50, 200, 0.05), transparent 25%);
+  color: var(--foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; 
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1); 
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2); 
+}
+
+/* Glass Utilities */
+.glass {
+  background: rgba(20, 20, 20, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.glass-card {
+  background: linear-gradient(145deg, rgba(30, 30, 30, 0.6), rgba(20, 20, 20, 0.4));
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.glass-card:hover {
+  background: linear-gradient(145deg, rgba(40, 40, 40, 0.7), rgba(30, 30, 30, 0.5));
+  border-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
 }

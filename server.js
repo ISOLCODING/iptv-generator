@@ -1,4 +1,5 @@
 const express = require('express');
+const axios = require('axios');
 const cors = require('cors');
 const NodeCache = require('node-cache');
 const { Parser } = require('m3u8-parser');
@@ -20,11 +21,6 @@ const parseM3uToJson = (m3uString) => {
         // Extract vlcopts/headers if any
         let userAgent = null;
         let referrer = null;
-
-        // Check for #EXTVLCOPT tags usually stored in title or separate parsing needed
-        // Since m3u8-parser might not capture non-standard EXT tags deeply, we manually parse if needed,
-        // but for standard EXTINF it works. 
-        // Our generator adds headers as comments/tags. Let's do a quick regex fallback if parser misses custom tags.
 
         return {
             id: segment.duration || Date.now(), // Fallback ID
@@ -75,9 +71,9 @@ const customParse = (m3u) => {
         }
     }
     return result;
-};
+  };
 
-app.get('/api/playlist', async (req, res) => {
+  app.get('/api/playlist', async (req, res) => {
     try {
         const cacheKey = 'playlist_json';
         const cachedData = cache.get(cacheKey);
@@ -97,14 +93,115 @@ app.get('/api/playlist', async (req, res) => {
         console.error(error);
         res.status(500).json({ error: 'Failed to generate playlist' });
     }
-});
+  });
 
-// Endpoint to force refresh
-app.post('/api/refresh', async (req, res) => {
+  // Serve raw M3U for players that need it directly
+  app.get('/playlist.m3u', async (req, res) => {
+    try {
+        const cacheKey = 'playlist_raw';
+        const cachedData = cache.get(cacheKey);
+
+        if (cachedData) {
+            console.log('[Server] Serving cached raw playlist');
+            res.set('Content-Type', 'audio/x-mpegurl');
+            return res.send(cachedData);
+        }
+
+        console.log('[Server] Generating new raw playlist...');
+        const m3uString = await Antigravity.generatePlaylistFromIptvOrg('ID');
+        
+        cache.set(cacheKey, m3uString);
+        res.set('Content-Type', 'audio/x-mpegurl');
+        res.send(m3uString);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('# Error generating playlist');
+    }
+  });
+
+  // Endpoint to force refresh
+  app.post('/api/refresh', async (req, res) => {
     cache.del('playlist_json');
+    cache.del('playlist_raw');
     res.json({ message: 'Cache cleared. Next request will fetch fresh data.' });
+  });
+
+// Helper to resolve relative URLs
+const resolveUrl = (baseUrl, relativeUrl) => {
+    try {
+        return new URL(relativeUrl, baseUrl).href;
+    } catch (e) {
+        return relativeUrl;
+    }
+};
+
+// Stream Proxy Endpoint
+app.get('/api/proxy', async (req, res) => {
+    const { url, referer, userAgent } = req.query;
+
+    if (!url) {
+        return res.status(400).send('Missing url parameter');
+    }
+
+    try {
+        const headers = {};
+        if (userAgent) headers['User-Agent'] = userAgent;
+        if (referer) headers['Referer'] = referer;
+        // Add basic headers to look like a browser if not provided
+        if (!headers['User-Agent']) headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
+
+        const response = await axios({
+            method: 'get',
+            url: url,
+            headers: headers,
+            responseType: 'arraybuffer',
+            timeout: 10000 // 10s timeout
+        });
+
+        let contentType = response.headers['content-type'] || '';
+        
+        // Forward CORS
+        res.set('Access-Control-Allow-Origin', '*');
+        res.set('Content-Type', contentType);
+
+        // Determine if it's a playlist
+        const isPlaylist = contentType.includes('mpegurl') || 
+                          contentType.includes('x-mpegurl') || 
+                          url.includes('.m3u8') || 
+                          url.includes('.m3u');
+
+        if (isPlaylist) {
+            let content = response.data.toString('utf8');
+            const lines = content.split('\n');
+            const rewrittenLines = lines.map(line => {
+                const trimmed = line.trim();
+                if (trimmed && !trimmed.startsWith('#')) {
+                    const absoluteUrl = resolveUrl(url, trimmed);
+                    // MUST be absolute so browser hits Backend, not Frontend
+                    const proxyUrl = `http://localhost:3000/api/proxy?url=${encodeURIComponent(absoluteUrl)}${referer ? `&referer=${encodeURIComponent(referer)}` : ''}${userAgent ? `&userAgent=${encodeURIComponent(userAgent)}` : ''}`;
+                    return proxyUrl;
+                }
+                if (trimmed.startsWith('#EXT-X-KEY:') || trimmed.startsWith('#EXT-X-MAP:')) {
+                     return line.replace(/URI="([^"]*)"/, (match, uri) => {
+                         const absoluteUrl = resolveUrl(url, uri);
+                         const proxyUrl = `http://localhost:3000/api/proxy?url=${encodeURIComponent(absoluteUrl)}${referer ? `&referer=${encodeURIComponent(referer)}` : ''}${userAgent ? `&userAgent=${encodeURIComponent(userAgent)}` : ''}`;
+                         return `URI="${proxyUrl}"`;
+                     });
+                }
+                return line;
+            });
+            return res.send(rewrittenLines.join('\n'));
+        }
+
+        // TS or other segments
+        res.send(response.data);
+
+    } catch (error) {
+        console.error(`[Proxy Error] ${url}:`, error.message);
+        res.status(500).send('Proxy Error');
+    }
 });
 
-app.listen(port, () => {
+  app.listen(port, () => {
     console.log(`[API] Server running at http://localhost:${port}`);
-});
+  });
