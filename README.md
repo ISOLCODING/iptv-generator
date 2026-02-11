@@ -1,78 +1,75 @@
-# IPTV Playlist Generator 🇮🇩 (V2)
+# 📺 NobarTV PRO - IPTV Generator & Player
 
-Tool canggih berbasis Node.js untuk membuat playlist IPTV (`.m3u`) saluran TV Indonesia. Versi ini menggabungkan data otomatis dari [IPTV-Org](https://github.com/iptv-org/api) dengan daftar kurasi manual untuk saluran-saluran populer yang membutuhkan penanganan khusus.
+![NobarTV PRO](https://raw.githubusercontent.com/afasyazynex/iptv-generator/main/public/logo.png)
 
-## 🚀 Fitur V2
+NobarTV PRO adalah platform streaming TV Indonesia modern yang menggabungkan kemudahan akses, tampilan mewah (Modern UI), dan performa tinggi menggunakan Next.js. Aplikasi ini tidak hanya berfungsi sebagai Web Player, tetapi juga sebagai **API-driven IPTV Generator** yang kompatibel dengan berbagai aplikasi pihak ketiga.
 
-- **Double-Source Strategy**:
-    1.  **Otomatis (IPTV-Org)**: Mengambil semua saluran ID publik yang tersedia di database global (13.000+ streams, ~180 saluran ID aktif).
-    2.  **Manual (Custom)**: Menyediakan link langsung untuk saluran premium/nasional yang sering hilang dari database publik.
-- **Support EPG**: Mengintegrasikan data jadwal acara (Electronic Program Guide) jika tersedia.
-- **Header Injection**: Menambahkan `User-Agent` dan `Referer` otomatis agar stream berjalan lancar di player seperti TiviMate/VLC.
+## ✨ Fitur Unggulan
 
-## 📋 Prasyarat
+- 💎 **Modern Luxury UI**: Desain mewah terinspirasi dari Vidio & Netflix menggunakan Framer Motion.
+- 🚀 **Built on Next.js 15**: Performa super cepat dengan Server-side Rendering & API Routes.
+- 📡 **Universal Proxy**: Melewati kendala CORS secara otomatis sehingga stream murni m3u8 bisa diputar di browser.
+- 📲 **Multi-Platform Support**: Bisa digunakan di Browser, OTT Navigator, TiviMate, dan VLC.
+- � **Auto-Sync**: Selalu sinkron dengan database IPTV-org untuk daftar channel terbaru.
 
-1.  **Node.js**: Unduh dan instal [nodejs.org](https://nodejs.org/).
-2.  **Git**: Untuk clone repository.
+---
 
-## 🛠️ Cara Penggunaan
+## 🛠️ Cara Menggunakan di Aplikasi IPTV (TiviMate / OTT Navigator)
 
-### 1. Instalasi
+Sekarang Anda bisa menggunakan playlist NobarTV PRO langsung di aplikasi Android TV atau Smartphone favorit Anda.
 
-```bash
-git clone https://github.com/ISOCODING/iptv-generator.git
-cd iptv-generator
-npm install
-```
+### 🔗 URL Playlist Anda:
+Gunakan URL permanen di bawah ini untuk aplikasi IPTV Anda:
+`https://nobartvgratis.afasya.com/api/playlist`
 
-### 2. Generate Playlist
+### Langkah-langkah:
+1.  Buka aplikasi **TiviMate**, **OTT Navigator**, atau **VLC**.
+2.  Pilih **Add Playlist** atau **New Playlist**.
+3.  Pilih tipe **M3U Playlist**.
+4.  Masukkan URL di atas.
+5.  Selesai! Daftar channel Indonesia akan otomatis muncul lengkap dengan Logo dan Kategori.
 
-Jalankan script utama:
+---
 
-```bash
-node generate.js
-```
+## �‍💻 Instalasi Lokal (Development)
 
-Hasilnya adalah file `playlist.m3u` yang berisi gabungan saluran dari semua sumber.
+Jika ingin menjalankan aplikasi ini di komputer sendiri:
 
-### 3. Cara Nonton
+1. **Clone repositori**:
+   ```bash
+   git clone https://github.com/usernamemu/iptv-generator.git
+   cd iptv-generator/frontend
+   ```
 
-Gunakan link **Raw** dari file `playlist.m3u` di GitHub Anda setelah melakukan push:
-```
-https://raw.githubusercontent.com/<USERNAME>/iptv-generator/master/playlist.m3u
-```
-Atau aktifkan **GitHub Pages** di settings repository untuk link yang lebih stabil.
+2. **Install dependensi**:
+   ```bash
+   npm install
+   ```
 
-## 📺 Daftar Saluran Unggulan (Updated)
+3. **Jalankan aplikasi**:
+   ```bash
+   npm run dev
+   ```
 
-Berikut adalah beberapa saluran utama yang sudah dikurasi dan diperbaiki link streaming-nya di versi ini:
+4. **Buka di browser**:
+   Akses `http://localhost:3000`
 
-| Kategori | Saluran | Status |
-| :--- | :--- | :--- |
-| **TransMedia** | Trans 7, Trans TV, CNN Indonesia, CNBC Indonesia | ✅ Aktif (HD) |
-| **VIVA** | ANTV, tvOne | ✅ Aktif |
-| **Media Group** | Metro TV, Magna Channel, BN Channel | ✅ Aktif |
-| **Lainnya** | Kompas TV, RTV, TVRI Nasional, Mentari TV | ✅ Aktif |
-| **Emtek** | SCTV, Indosiar, Moji | ⚠️ Terbatas (Vidio Exclusive) |
+---
 
-*Catatan: Saluran Emtek (SCTV/Indosiar) sangat ketat dengan token keamanan. Link statis mungkin sering berubah/mati.*
+## 🚀 Deployment ke Vercel
 
-## ⚠️ Disclaimer
+Aplikasi ini sudah dioptimalkan untuk Vercel (Serverless):
 
-Aplikasi ini hanya **mengagregasi tautan** yang tersedia secara publik di internet. Kami tidak menghosting konten apapun. Ketersediaan saluran sepenuhnya tergantung pada penyedia layanan streaming aslinya.
+1. Hubungkan akun GitHub ke **Vercel**.
+2. Pilih folder `frontend` sebagai Root Directory.
+3. Klik **Deploy**.
+4. Nikmati link streaming permanen Anda sendiri!
 
-## 🌐 Deployment (Frontend Web)
+---
 
-Web Player (Next.js) yang ada di folder `frontend` dirancang untuk di-deploy ke **Vercel**:
+## 🛡️ Disclaimer
+Aplikasi ini hanya alat bantu untuk mengumpulkan (agregator) link streaming yang tersedia secara publik di internet melalui API IPTV-org. Kami tidak menghosting konten video apapun di server kami. Segala hak cipta konten adalah milik masing-masing stasiun televisi.
 
-1.  Push kode terbaru ke GitHub.
-2.  Buka [Vercel Dashboard](https://vercel.com/new).
-3.  Import repository `iptv-generator`.
-4.  🚧 **PENTING**: Pada bagian **Root Directory**, ubah (Edit) menjadi `frontend`.
-5.  Klik **Deploy**.
+---
 
-Aplikasi web Anda akan online dan otomatis mengambil playlist terbaru dari GitHub Pages.
-
-## 📄 Lisensi
-
-MIT
+**Developed with ❤️ by orangindo**

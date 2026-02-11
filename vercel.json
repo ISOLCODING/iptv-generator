@@ -1,0 +1,16 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "installCommand": "npm install",
+  "rootDirectory": "frontend",
+  "rewrites": [
+    {
+      "source": "/api/playlist",
+      "destination": "/api/playlist"
+    },
+    {
+      "source": "/api/proxy",
+      "destination": "/api/proxy"
+    }
+  ]
+}

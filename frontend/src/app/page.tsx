@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import { useEffect, useState, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import "@vidstack/react/player/styles/base.css";
 import "@vidstack/react/player/styles/default/theme.css";
 import "@vidstack/react/player/styles/default/layouts/video.css";
@@ -18,7 +19,9 @@ import {
   Radio,
   Menu,
   Play,
-  Star
+  Star,
+  ChevronRight,
+  Info
 } from "lucide-react"; 
 
 interface Channel {
@@ -38,7 +41,7 @@ function HomeContent() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [favorites, setFavorites] = useState<string[]>([]);
-  const [history, setHistory] = useState<string[]>([]); // Store Channel IDs
+  const [history, setHistory] = useState<string[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   // --- Persistence ---
@@ -63,12 +66,12 @@ function HomeContent() {
   };
 
   const addToHistory = (channelId: string) => {
-    const newHistory = [channelId, ...history.filter(id => id !== channelId)].slice(0, 20); // Keep last 20
+    const newHistory = [channelId, ...history.filter(id => id !== channelId)].slice(0, 20);
     setHistory(newHistory);
     localStorage.setItem("history", JSON.stringify(newHistory));
   };
 
-  // --- Fetching & Parsing ---
+  // --- Parsing M3U ---
   const parseM3U = (content: string): Channel[] => {
     const lines = content.split('\n');
     const result: Channel[] = [];
@@ -89,10 +92,6 @@ function HomeContent() {
                 logo: tvgLogo || "",
                 group: group || 'Uncategorized',
             };
-        } else if (line.startsWith('#EXTVLCOPT:http-user-agent=')) {
-            currentItem.userAgent = line.split('=')[1];
-        } else if (line.startsWith('#EXTVLCOPT:http-referrer=')) {
-            currentItem.referrer = line.split('=')[1];
       } else if (line && !line.startsWith('#')) {
             if (currentItem.name) {
                 currentItem.url = line;
@@ -107,7 +106,7 @@ function HomeContent() {
   const fetchChannels = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:3000/playlist.m3u");
+      const res = await fetch("/api/playlist");
       if (!res.ok) throw new Error(`Failed to fetch: ${res.statusText}`);
       
       const text = await res.text();
@@ -141,21 +140,16 @@ function HomeContent() {
 
   const filteredChannels = useMemo(() => {
     let result = channels;
-
     if (selectedCategory === "Favorites") {
       result = result.filter(c => favorites.includes(c.id));
     } else if (selectedCategory === "Recent") {
       result = result.filter(c => history.includes(c.id));
-      // Sort by history order
       result.sort((a, b) => history.indexOf(a.id) - history.indexOf(b.id));
     } else if (selectedCategory !== "All") {
       result = result.filter((c) => c.group === selectedCategory);
     }
-
     if (search) {
-      result = result.filter((c) => 
-        c.name.toLowerCase().includes(search.toLowerCase())
-      );
+      result = result.filter((c) => c.name.toLowerCase().includes(search.toLowerCase()));
     }
     return result;
   }, [channels, selectedCategory, search, favorites, history]);
@@ -166,240 +160,322 @@ function HomeContent() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // --- Animation Variants ---
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.05 }
+    }
+  } as const;
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 260,
+        damping: 20
+      }
+    }
+  } as const;
+
   return (
-    <main className="min-h-screen text-white font-sans selection:bg-red-500/30 selection:text-red-200">
+    <main className="min-h-screen bg-background text-white selection:bg-red-600/50">
 
-      {/* Background Ambience */}
-      <div className="fixed inset-0 pointer-events-none z-[-1] bg-black/50" />
-
-      {/* Header */}
-      <nav className="fixed top-0 w-full z-50 glass h-16 flex items-center px-4 lg:px-8 justify-between shadow-2xl shadow-black/50">
-        <div className="flex items-center gap-4">
-          <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="lg:hidden p-2 hover:bg-white/10 rounded-full transition">
-            <Menu className="w-5 h-5" />
+      {/* Dynamic Glass Navbar */}
+      <motion.nav
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        className="fixed top-0 w-full z-50 glass-sidebar flex items-center px-4 lg:px-10 h-20 justify-between"
+      >
+        <div className="flex items-center gap-6">
+          <button
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            className="p-2.5 hover:bg-white/5 rounded-xl transition-all active:scale-95"
+          >
+            <Menu className="w-6 h-6 text-gray-300" />
           </button>
-          <div className="flex items-center gap-3 cursor-pointer group" onClick={() => window.location.reload()}>
-            <div className="relative">
-              <div className="absolute inset-0 bg-red-600 blur opacity-50 group-hover:opacity-80 transition"></div>
-              <img src="/logo.png" alt="Logo" className="relative w-8 h-8 object-contain" />
+
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            className="flex items-center gap-3 cursor-pointer group"
+            onClick={() => window.location.reload()}
+          >
+            <div className="relative w-10 h-10">
+              <div className="absolute inset-0 bg-red-600 blur-lg opacity-40 group-hover:opacity-100 transition-opacity"></div>
+              <img src="/logo.png" alt="Logo" className="relative w-full h-full object-contain logo-glow" />
             </div>
-            <h1 className="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
-              NobarTV<span className="text-red-500">PRO</span>
+            <h1 className="text-2xl font-black tracking-tighter">
+              NobarTV<span className="text-red-600">PRO</span>
             </h1>
-          </div>
+          </motion.div>
         </div>
-        
-        <div className="flex items-center gap-3 md:gap-6">
-          <div className="relative w-40 md:w-80 group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-red-600 to-blue-600 rounded-full opacity-20 group-hover:opacity-60 blur transition duration-500"></div>
-            <div className="relative flex items-center bg-[#0a0a0a] rounded-full border border-white/10 overflow-hidden">
-              <Search className="w-4 h-4 text-gray-400 ml-3" />
-              <input
-                type="text" 
-                placeholder="Cari channel..."
-                className="w-full bg-transparent border-none py-2 px-3 text-sm focus:outline-none text-gray-200 placeholder-gray-500"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </div>
+
+        <div className="flex items-center gap-6">
+          <div className="relative hidden md:block w-96">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+            <input
+              type="text" 
+              placeholder="Cari hiburanmu di sini..."
+              className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-red-600/50 focus:bg-white/10 transition-all placeholder:text-gray-600"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
           </div>
-          <button onClick={fetchChannels} className="p-2 hover:bg-white/10 rounded-full transition relative group" title="Refresh">
-            <RefreshCcw className={`w-5 h-5 text-gray-400 group-hover:text-white transition ${loading ? 'animate-spin' : ''}`} />
-            </button>
+          <button onClick={fetchChannels} className="p-3 hover:bg-white/5 rounded-full transition active:rotate-180 duration-500">
+            <RefreshCcw className={`w-5 h-5 text-gray-400 ${loading ? 'animate-spin' : ''}`} />
+          </button>
         </div>
-      </nav>
+      </motion.nav>
 
-      <div className="pt-16 flex h-screen overflow-hidden">
+      <div className="flex pt-20 h-screen overflow-hidden">
         
-        {/* Sidebar */}
-        <aside className={`
-            fixed lg:static z-40 inset-y-0 left-0 w-72 glass border-r-0 border-white/5 
-            transform transition-transform duration-300 ease-in-out flex flex-col pt-16 lg:pt-0
-            ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0 lg:w-0 lg:opacity-0 lg:overflow-hidden'}
-        `}>
-          <div className="p-4 flex-1 overflow-y-auto scrollbar-thin">
-            <h2 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4 px-2 mt-2">Library</h2>
-            <div className="space-y-1 mb-6">
-              {['All', 'Favorites', 'Recent'].map(cat => (
-                <button
-                  key={cat}
-                  onClick={() => { setSelectedCategory(cat); if (window.innerWidth < 1024) setIsSidebarOpen(false); }}
-                  className={`w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-3
-                        ${selectedCategory === cat
-                      ? "bg-gradient-to-r from-red-600/20 to-transparent border-l-2 border-red-500 text-white"
-                      : "text-gray-400 hover:text-white hover:bg-white/5"}`}
-                >
-                  {cat === 'All' && <Tv className="w-4 h-4" />}
-                  {cat === 'Favorites' && <Heart className="w-4 h-4" />}
-                  {cat === 'Recent' && <History className="w-4 h-4" />}
-                  {cat}
-                </button>
-              ))}
-            </div>
+        {/* Modern Sidebar */}
+        <AnimatePresence mode="wait">
+          {isSidebarOpen && (
+            <motion.aside
+              initial={{ x: -300, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: -300, opacity: 0 }}
+              className="fixed lg:relative z-40 inset-y-0 w-80 glass-sidebar flex flex-col"
+            >
+              <div className="p-6 flex-1 overflow-y-auto custom-scrollbar">
+                <div className="space-y-8">
+                  {/* Quick Filters */}
+                  <div>
+                    <h2 className="text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-4 ml-2">Exploration</h2>
+                    <div className="space-y-1.5">
+                      {[
+                        { id: 'All', icon: Tv, label: 'Semua Channel' },
+                        { id: 'Favorites', icon: Heart, label: 'Favorit Saya' },
+                        { id: 'Recent', icon: History, label: 'Baru Diputar' }
+                      ].map(cat => (
+                        <button
+                          key={cat.id}
+                          onClick={() => setSelectedCategory(cat.id)}
+                          className={`w-full group flex items-center justify-between px-4 py-3.5 rounded-2xl transition-all
+                            ${selectedCategory === cat.id
+                              ? "bg-red-600 shadow-lg shadow-red-600/20 text-white"
+                              : "text-gray-400 hover:bg-white/5 hover:text-white"}`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <cat.icon className={`w-5 h-5 ${selectedCategory === cat.id ? "text-white" : "group-hover:text-red-500 transition-colors"}`} />
+                            <span className="text-sm font-semibold">{cat.label}</span>
+                          </div>
+                          <ChevronRight className={`w-4 h-4 opacity-0 group-hover:opacity-100 transition-all ${selectedCategory === cat.id ? 'opacity-100' : ''}`} />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
 
-            <h2 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4 px-2">Categories</h2>
-            <div className="space-y-1">
-              {categories.filter(c => !['All', 'Favorites', 'Recent'].includes(c)).map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => { setSelectedCategory(cat); if (window.innerWidth < 1024) setIsSidebarOpen(false); }}
-                  className={`w-full text-left px-4 py-2.5 rounded-lg text-sm transition-all duration-200 truncate
-                        ${selectedCategory === cat
-                      ? "bg-white/10 text-white"
-                      : "text-gray-500 hover:text-gray-300 hover:bg-white/5"}`}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-          </div>
-        </aside>
+                  {/* Dynamic Categories */}
+                  <div>
+                    <h2 className="text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-4 ml-2">Kategori</h2>
+                    <div className="grid grid-cols-1 gap-1.5">
+                      {categories.filter(c => !['All', 'Favorites', 'Recent'].includes(c)).map((cat) => (
+                        <button
+                          key={cat}
+                          onClick={() => setSelectedCategory(cat)}
+                          className={`text-left px-5 py-3 rounded-2xl text-sm transition-all truncate font-medium
+                                ${selectedCategory === cat
+                              ? "bg-white/10 text-white border-l-4 border-red-600 pl-4"
+                              : "text-gray-500 hover:text-gray-300 hover:bg-white/5"}`}
+                        >
+                          {cat}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.aside>
+          )}
+        </AnimatePresence>
 
-        {/* Backdrop for Mobile Sidebar */}
-        {isSidebarOpen && (
-          <div className="fixed inset-0 bg-black/60 z-30 lg:hidden backdrop-blur-sm" onClick={() => setIsSidebarOpen(false)} />
-        )}
+        {/* Content Explorer */}
+        <div className="flex-1 overflow-y-auto p-4 lg:p-10 custom-scrollbar pb-32">
 
-        {/* Main Content Area */}
-        <div className={`flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 p-4 lg:p-8 transition-all duration-300 pb-24`}>
-
-          {/* Player Container */}
-          {selectedChannel && (
-            <div className="mb-10 animate-in fade-in slide-in-from-top-8 duration-700">
-              <div className="relative aspect-video xl:aspect-[21/9] bg-black rounded-3xl overflow-hidden shadow-2xl shadow-red-900/20 ring-1 ring-white/10 group">
-                 <MediaPlayer 
+          <AnimatePresence mode="wait">
+            {selectedChannel ? (
+              <motion.div
+                key="player"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                className="mb-12"
+              >
+                <div className="relative group rounded-[2.5rem] overflow-hidden bg-black shadow-2xl ring-1 ring-white/10 aspect-video lg:aspect-21/9">
+                  <MediaPlayer 
                     title={selectedChannel.name} 
-                  src={{ src: selectedChannel.url, type: 'application/x-mpegurl' }}
+                    src={{ src: selectedChannel.url, type: 'application/x-mpegurl' }}
                     aspectRatio="16/9"
                     load="eager"
                     autoPlay
-                  crossOrigin="anonymous"
-                  className="w-full h-full"
-                  key={selectedChannel.id} // Add key to force re-mount on channel change
-                 >
+                    crossOrigin="anonymous"
+                    className="w-full h-full"
+                    key={selectedChannel.id}
+                  >
                     <MediaProvider />
                     <DefaultVideoLayout icons={defaultLayoutIcons} />
-                 </MediaPlayer>
+                  </MediaPlayer>
 
-                {/* Top overlay controls */}
-                <div className="absolute top-0 left-0 w-full p-6 flex justify-between items-start opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                  <div className="pointer-events-auto">
-                    <span className="px-3 py-1 bg-red-600 text-white text-xs font-bold rounded-full uppercase tracking-wider shadow-lg">Live</span>
+                  <div className="absolute top-8 left-8 flex gap-3 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span className="bg-red-600 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+                      Live
+                    </span>
                   </div>
+
                   <button
                     onClick={() => setSelectedChannel(null)}
-                    className="pointer-events-auto bg-black/40 hover:bg-black/60 backdrop-blur-xl text-white rounded-full p-2 transition border border-white/10"
+                    className="absolute top-8 right-8 p-3 bg-black/40 hover:bg-red-600 transition-all rounded-full backdrop-blur-xl border border-white/10"
                   >
                     <X className="w-5 h-5" />
                   </button>
                 </div>
-              </div>
 
-              <div className="mt-6 flex flex-col md:flex-row md:items-center gap-6 px-2">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-red-500 blur-lg opacity-20 rounded-full"></div>
-                  {selectedChannel.logo ? (
-                    <img src={selectedChannel.logo} alt="logo" className="relative w-16 h-16 object-contain bg-[#1a1a1a] rounded-2xl p-2 border border-white/10 shadow-xl" />
-                  ) : (
-                    <div className="relative w-16 h-16 bg-[#1a1a1a] rounded-2xl flex items-center justify-center border border-white/10">
-                      <Radio className="w-8 h-8 text-gray-600" />
+                <div className="mt-8 flex flex-wrap items-center justify-between gap-6 px-4">
+                  <div className="flex items-center gap-6">
+                    <motion.img
+                      initial={{ rotate: -10, opacity: 0 }}
+                      animate={{ rotate: 0, opacity: 1 }}
+                      src={selectedChannel.logo || "/logo.png"}
+                      className="w-20 h-20 object-contain p-3 bg-white/5 rounded-3xl border border-white/10 shadow-2xl"
+                    />
+                    <div>
+                      <h2 className="text-4xl font-black mb-2 tracking-tight">{selectedChannel.name}</h2>
+                      <div className="flex items-center gap-3 text-gray-400">
+                        <span className="text-sm font-bold px-3 py-1 bg-white/5 rounded-lg border border-white/10">{selectedChannel.group}</span>
+                        <div className="w-1 h-1 rounded-full bg-gray-600"></div>
+                        <span className="text-xs flex items-center gap-1.5"><Play className="w-3 h-3 fill-current" /> Sedang Streaming</span>
                       </div>
-                  )}
+                    </div>
                   </div>
-                <div className="flex-1">
-                  <h2 className="text-3xl font-bold text-white mb-1">{selectedChannel.name}</h2>
-                  <div className="flex items-center gap-3">
-                    <span className="text-xs font-semibold text-gray-400 bg-white/5 border border-white/10 px-2 py-1 rounded-md uppercase tracking-wider">{selectedChannel.group}</span>
-                    {selectedChannel.userAgent && <span className="text-[10px] text-gray-600 font-mono hidden md:inline-block">UA: {selectedChannel.userAgent}</span>}
+
+                  <div className="flex items-center gap-4">
+                    <button
+                      onClick={(e) => toggleFavorite(e, selectedChannel.id)}
+                      className={`p-4 rounded-2xl transition-all shadow-xl
+                          ${favorites.includes(selectedChannel.id)
+                          ? "bg-red-600 text-white shadow-red-600/30"
+                          : "bg-white/5 hover:bg-white/10 border border-white/10 text-gray-400 hover:text-white"}`}
+                    >
+                      <Heart className={`w-6 h-6 ${favorites.includes(selectedChannel.id) ? "fill-current" : ""}`} />
+                    </button>
+                    <button className="bg-white text-black px-8 py-4 rounded-2xl font-bold flex items-center gap-3 hover:bg-gray-200 transition-all">
+                      <Info className="w-5 h-5" /> Detail
+                    </button>
                   </div>
                 </div>
-                <button
-                  onClick={(e) => toggleFavorite(e, selectedChannel.id)}
-                  className={`flex items-center gap-2 px-5 py-2.5 rounded-full font-medium transition-all shadow-lg
-                    ${favorites.includes(selectedChannel.id)
-                      ? "bg-red-600 text-white shadow-red-600/30 hover:bg-red-700"
-                      : "bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300"}`}
+              </motion.div>
+            ) : (
+              /* Spotlight / Hero like Vidio */
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="relative w-full h-[400px] mb-12 rounded-[3rem] overflow-hidden group cursor-pointer"
                 >
-                  <Heart className={`w-4 h-4 ${favorites.includes(selectedChannel.id) ? "fill-current" : ""}`} />
-                  {favorites.includes(selectedChannel.id) ? "Favorited" : "Favorite"}
-                </button>
-               </div>
-            </div>
-          )}
+                  <img src="https://images.unsplash.com/photo-1593784991095-a205069470b6?auto=format&fit=crop&q=80&w=2000" className="absolute inset-0 w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-1000" />
+                  <div className="absolute inset-0 bg-linear-to-t from-background via-background/40 to-transparent" />
+                  <div className="absolute bottom-12 left-12 max-w-2xl">
+                    <h2 className="text-6xl font-black mb-4 tracking-tighter leading-tight">Nonton TV Sat Gak Pake Ribet.</h2>
+                    <p className="text-xl text-gray-300 mb-8 font-medium">Banyak channel lokal dan internasional terbanyak di kelasnya. Cobain NobarTV PRO sekarang!</p>
+                    <div className="flex gap-4">
+                      <button className="bg-red-600 hover:bg-red-700 px-10 py-4 rounded-2xl font-black flex items-center gap-3 transition-all shadow-2xl shadow-red-600/30">
+                        <MonitorPlay className="w-6 h-6" /> MULAI NONTON
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+            )}
+          </AnimatePresence>
 
-          {/* Grid Header */}
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold flex items-center gap-2">
-              {selectedCategory === 'Favorites' ? <Star className="w-5 h-5 text-yellow-500 fill-current" /> :
-                selectedCategory === 'Recent' ? <History className="w-5 h-5 text-blue-400" /> :
-                  <Tv className="w-5 h-5 text-red-500" />}
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-500">
-                {selectedCategory} Channels
-              </span>
-              <span className="text-sm font-normal text-gray-600 ml-2">({filteredChannels.length})</span>
-            </h2>
+          {/* Channels Grid Section */}
+          <div className="flex items-center justify-between mb-8 px-2">
+            <div>
+              <h2 className="text-2xl font-black flex items-center gap-3 tracking-tight lowercase first-letter:uppercase">
+                <span className="w-2 h-8 bg-red-600 rounded-full"></span>
+                {selectedCategory} <span className="text-gray-600 font-medium tracking-normal text-lg">({filteredChannels.length})</span>
+              </h2>
+            </div>
           </div>
 
-          {/* Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 gap-8">
              {loading ? (
                 [...Array(10)].map((_, i) => (
-                  <div key={i} className="aspect-video bg-white/5 rounded-2xl animate-pulse" />
+                  <div key={i} className="aspect-video rounded-[2.5rem] bg-white/5 animate-pulse" />
                 ))
              ) : (
-                filteredChannels.map((channel) => (
-                  <div 
+                filteredChannels.map((channel, idx) => (
+                  <motion.div 
                     key={channel.id}
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 260,
+                      damping: 20,
+                      delay: Math.min(idx * 0.05, 0.5)
+                    }}
                     onClick={() => handleChannelSelect(channel)}
-                    className="group glass-card relative aspect-video rounded-2xl overflow-hidden cursor-pointer transition-all duration-300"
+                    className="group premium-card relative aspect-video rounded-[2.5rem] cursor-pointer"
                   >
-                    {/* Thumbnail / Logo Area */}
-                    <div className="absolute inset-0 flex items-center justify-center p-8 bg-[#121212] group-hover:scale-105 transition-transform duration-500">
+                    {/* Channel Thumbnail/Logo */}
+                    <div className="absolute inset-0 flex items-center justify-center p-12 bg-[#050505] transition-all duration-700">
                        {channel.logo ? (
-                        <img src={channel.logo} alt={channel.name} className="w-full h-full object-contain opacity-70 group-hover:opacity-100 transition-opacity duration-300"
-                          onError={(e) => (e.currentTarget.style.display = 'none')} />
+                        <img
+                          src={channel.logo}
+                          alt={channel.name}
+                          className="w-full h-full object-contain filter grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700"
+                        />
                        ) : (
-                          <span className="text-3xl font-bold text-gray-800 select-none group-hover:text-gray-700 transition-colors">{channel.name.substring(0, 2)}</span>
+                          <span className="text-5xl font-black text-white/10 group-hover:text-red-600/40 transition-colors uppercase">{channel.name.substring(0, 2)}</span>
                        )}
                     </div>
                     
-                    {/* Hover Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-60 group-hover:opacity-90 transition-opacity duration-300" />
+                    {/* Hover UI */}
+                    <div className="absolute inset-0 bg-linear-to-t from-black via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
 
-                    {/* Content */}
-                    <div className="absolute top-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+                    <div className="absolute top-6 right-6 z-10 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0">
                       <button
                         onClick={(e) => toggleFavorite(e, channel.id)}
-                        className="p-2 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur text-white transition hover:scale-110"
+                        className="p-3.5 rounded-2xl bg-white/10 backdrop-blur-2xl text-white hover:bg-red-600 transition-all active:scale-90"
                       >
-                        <Heart className={`w-4 h-4 ${favorites.includes(channel.id) ? "fill-red-500 text-red-500" : ""}`} />
+                        <Heart className={`w-5 h-5 ${favorites.includes(channel.id) ? "fill-current" : ""}`} />
                       </button>
                     </div>
 
-                    <div className="absolute bottom-0 left-0 w-full p-4 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                      <h3 className="font-semibold text-white truncate text-shadow-sm pr-8">{channel.name}</h3>
-                       <p className="text-xs text-gray-400 truncate">{channel.group}</p>
+                    <div className="absolute bottom-0 left-0 w-full p-8 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                      <div className="flex items-center gap-2 mb-2 opacity-0 group-hover:opacity-100 transition-all delay-100">
+                        <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse"></span>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-red-500">Streaming Sekarang</span>
+                      </div>
+                      <h3 className="text-xl font-bold text-white truncate group-hover:text-red-500 transition-colors">{channel.name}</h3>
+                      <p className="text-xs text-gray-500 font-medium group-hover:text-gray-300 transition-colors">{channel.group}</p>
                     </div>
 
-                    {/* Play Button Overlay */}
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="bg-gradient-to-br from-red-600 to-red-800 rounded-full p-4 shadow-xl shadow-red-900/40 transform scale-75 group-hover:scale-100 transition-transform duration-300">
-                        <Play className="w-6 h-6 text-white fill-current ml-1" />
-                        </div>
-                    </div>
-                  </div>
+                    <div className="absolute inset-x-0 bottom-0 h-1 bg-red-600 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-700" />
+                  </motion.div>
                 ))
              )}
           </div>
           
+          {/* Empty State */}
           {!loading && filteredChannels.length === 0 && (
-            <div className="text-center py-20">
-              <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
-                <MonitorPlay className="w-10 h-10 text-gray-600" />
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="flex flex-col items-center justify-center py-40 bg-white/5 rounded-[4rem] border border-white/5 border-dashed"
+            >
+              <div className="w-24 h-24 bg-red-600/10 rounded-full flex items-center justify-center mb-6">
+                <MonitorPlay className="w-12 h-12 text-red-600" />
               </div>
-              <h3 className="text-xl font-bold text-gray-300 mb-2">No channels found</h3>
-              <p className="text-gray-500">Try adjusting your search or category filters.</p>
-             </div>
+              <h3 className="text-2xl font-black text-gray-400 mb-2">Gak ada channel-nya :(</h3>
+              <p className="text-gray-600 font-medium">Coba ganti kategori atau kata kunci pencarianmu.</p>
+            </motion.div>
           )}
 
         </div>
