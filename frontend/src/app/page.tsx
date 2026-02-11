@@ -203,6 +203,36 @@ function HomeContent() {
     setDisplayCount(prev => prev + ITEMS_PER_LOAD);
   };
 
+  // Helper function to determine grid span based on index
+  const getGridSpan = (index: number) => {
+    // Pattern loop of 10 items for variety
+    // 0: Big Large (2x2)
+    // 1: Wide (2x1) 
+    // 2: Normal (1x1)
+    // 3: Normal (1x1)
+    // 4: Tall (1x2)
+    // 5: Normal (1x1) 
+    // 6: Wide (2x1)
+    // 7: Normal (1x1)
+    // 8: Normal (1x1)
+    // 9: Normal (1x1)
+
+    // Check if it's mobile (only 1 col) -> We handle this via CSS media queries, 
+    // but here we just return classes that apply on 'md' or 'lg' screens.
+
+    // NOTE: This pattern requires a dense grid auto-flow to fill gaps.
+
+    const patternIndex = index % 10;
+
+    switch (patternIndex) {
+      case 0: return "md:col-span-2 md:row-span-2"; // Big Feature
+      case 1: return "md:col-span-2 md:row-span-1"; // Wide
+      case 4: return "md:col-span-1 md:row-span-2"; // Tall
+      case 6: return "md:col-span-2 md:row-span-1"; // Wide
+      default: return "col-span-1 row-span-1";
+    }
+  };
+
   return (
     <main className="min-h-screen bg-background text-slate-900 selection:bg-blue-600/30">
 
@@ -413,7 +443,7 @@ function HomeContent() {
                 >
                   {/* Carousel Images */}
                   <AnimatePresence mode="popLayout">
-                    <motion.img
+                    <motion.img 
                       key={currentHeroIndex}
                       src={HERO_IMAGES[currentHeroIndex]}
                       initial={{ opacity: 0, scale: 1.1 }}
@@ -474,10 +504,10 @@ function HomeContent() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-[200px]">
             {loading ? (
               [...Array(10)].map((_, i) => (
-                <div key={i} className="aspect-video rounded-[2.5rem] bg-slate-100 animate-pulse border border-slate-200" />
+                <div key={i} className="rounded-3xl bg-slate-100 animate-pulse border border-slate-200" />
               ))
             ) : (
                 visibleChannels.map((channel, idx) => (
@@ -492,10 +522,10 @@ function HomeContent() {
                     delay: 0.1
                   }}
                   onClick={() => handleChannelSelect(channel)}
-                  className="group premium-card relative aspect-video rounded-[2.5rem] cursor-pointer"
+                    className={`group premium-card relative rounded-3xl cursor-pointer overflow-hidden ${getGridSpan(idx)}`}
                 >
                   {/* Channel Thumbnail/Logo */}
-                  <div className="absolute inset-0 flex items-center justify-center p-8 lg:p-12 bg-white transition-all duration-700">
+                    <div className="absolute inset-0 flex items-center justify-center p-8 bg-white transition-all duration-700">
                     {channel.logo ? (
                       <img
                         src={channel.logo}
@@ -511,25 +541,23 @@ function HomeContent() {
                   {/* Hover UI */}
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
 
-                  <div className="absolute top-6 right-6 z-10 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0">
+                    <div className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0">
                     <button
                       onClick={(e) => toggleFavorite(e, channel.id)}
-                      className="p-3.5 rounded-2xl bg-white/10 backdrop-blur-2xl text-white hover:bg-blue-600 transition-all active:scale-90"
+                        className="p-2.5 rounded-xl bg-white/10 backdrop-blur-md text-white hover:bg-blue-600 transition-all active:scale-90"
                     >
-                      <Heart className={`w-5 h-5 ${favorites.includes(channel.id) ? "fill-current" : ""}`} />
+                        <Heart className={`w-4 h-4 ${favorites.includes(channel.id) ? "fill-current" : ""}`} />
                     </button>
                   </div>
 
-                  <div className="absolute bottom-0 left-0 w-full p-8 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                    <div className="flex items-center gap-2 mb-2 opacity-0 group-hover:opacity-100 transition-all delay-100">
-                      <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
-                      <span className="text-[10px] font-black uppercase tracking-widest text-blue-400">Streaming Sekarang</span>
+                    <div className="absolute bottom-0 left-0 w-full p-6 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                      <div className="flex items-center gap-2 mb-1 opacity-0 group-hover:opacity-100 transition-all delay-100">
+                        <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
+                        <span className="text-[9px] font-black uppercase tracking-widest text-blue-300">Live</span>
                     </div>
-                    <h3 className="text-xl font-bold text-white truncate group-hover:text-blue-400 transition-colors">{channel.name}</h3>
-                    <p className="text-xs text-slate-300 font-medium">{channel.group}</p>
-                  </div>
-
-                  <div className="absolute inset-x-0 bottom-0 h-1 bg-blue-600 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-700" />
+                      <h3 className="text-lg font-bold text-white truncate leading-tight group-hover:text-blue-300 transition-colors">{channel.name}</h3>
+                      <p className="text-[10px] text-slate-300 font-medium truncate">{channel.group}</p>
+                    </div>
                 </motion.div>
               ))
             )}
