@@ -1,12 +1,16 @@
 @import "tailwindcss";
 
 :root {
-  --background: #020202;
-    --foreground: #f8fafc;
-    --sidebar-bg: rgba(6, 6, 6, 0.7);
-    --card-bg: rgba(20, 20, 20, 0.4);
-    --accent: #E50914;
-    --accent-glow: rgba(229, 9, 20, 0.4);
+  --background: #f8fafc;
+    /* Slate 50 */
+    --foreground: #0f172a;
+    /* Slate 900 */
+    --sidebar-bg: rgba(255, 255, 255, 0.85);
+    --card-bg: #ffffff;
+    --accent: #2563eb;
+    /* Blue 600 */
+    --accent-glow: rgba(37, 99, 235, 0.4);
+    --border-light: rgba(226, 232, 240, 0.8);
 }
 
 @theme inline {
@@ -22,19 +26,17 @@ body {
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
   overflow-x: hidden;
   position: relative;
-  }
-  
-  /* Luxury Mesh Background */
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    background:
-      radial-gradient(circle at 0% 0%, rgba(30, 0, 0, 0.5) 0%, transparent 40%),
-      radial-gradient(circle at 100% 0%, rgba(0, 0, 30, 0.3) 0%, transparent 40%),
-      radial-gradient(circle at 50% 100%, rgba(20, 20, 20, 0.8) 0%, var(--background) 50%);
-    pointer-events: none;
+}
+/* Modern Gradient Background */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(37, 99, 235, 0.08) 0%, transparent 40%),
+      radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.08) 0%, transparent 40%);
+      pointer-events: none;
 }
 
 /* Custom Scrollbar */
@@ -43,71 +45,78 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.3);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(148, 163, 184, 0.4);
     border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(148, 163, 184, 0.6);
 }
 
-/* Immersive Glass Sidebar */
+/* Immersive Glass Sidebar (Light) */
 .glass-sidebar {
-  background: rgba(8, 8, 8, 0.6);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--sidebar-bg);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-right: 1px solid var(--border-light);
+    box-shadow: 1px 0 20px rgba(0, 0, 0, 0.02);
 }
 
-/* Premium Card Design */
+/* Premium Card Design (Light Modern) */
 .premium-card {
-  background: rgba(20, 20, 20, 0.3);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: var(--card-bg);
+    border: 1px solid var(--border-light);
+    border-radius: 1.5rem;
     transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
     overflow: hidden;
-  }
-  
-  .premium-card:hover {
-    background: rgba(30, 30, 30, 0.5);
-    border-color: rgba(255, 255, 255, 0.12);
-    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5), 0 0 20px rgba(229, 9, 20, 0.1);
-  }
-  
-  /* Glow Effect */
-  .glow-on-hover:hover {
-    text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
-  }
-  
-  /* Shimmer Animation for Loading */
-  @keyframes shimmer {
-    0% {
-      transform: translateX(-100%);
-    }
-  
-    100% {
-      transform: translateX(100%);
-    }
-  }
-  
-  .animate-shimmer {
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .animate-shimmer::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03), transparent);
-    animation: shimmer 1.5s infinite;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
 }
 
-/* Logo Animation like Netflix/Vidio */
+.premium-card:hover {
+  transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.06), 0 10px 10px -5px rgba(0, 0, 0, 0.03);
+    border-color: rgba(37, 99, 235, 0.3);
+  }
+/* Minimized Player Style */
+.minimized-player {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 380px;
+  height: auto;
+  aspect-ratio: 16/9;
+  z-index: 100;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  animation: slideIn 0.3s ease-out;
+}
+@keyframes slideIn {
+  from {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@media (max-width: 640px) {
+  .minimized-player {
+    width: calc(100% - 32px);
+    right: 16px;
+    left: 16px;
+    bottom: 80px;
+    /* Above nav bar if exist or just safer margin */
+  }
+}
+/* Logo Animation */
 .logo-glow {
-  filter: drop-shadow(0 0 5px var(--accent-glow));
+  filter: drop-shadow(0 0 8px rgba(37, 99, 235, 0.3));
 }

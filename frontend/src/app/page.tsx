@@ -21,7 +21,9 @@ import {
   Play,
   Star,
   ChevronRight,
-  Info
+  Info,
+  Minimize2,
+  Maximize2
 } from "lucide-react"; 
 
 interface Channel {
@@ -43,6 +45,7 @@ function HomeContent() {
   const [favorites, setFavorites] = useState<string[]>([]);
   const [history, setHistory] = useState<string[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isMinimized, setIsMinimized] = useState(false);
 
   // --- Persistence ---
   useEffect(() => {
@@ -183,20 +186,20 @@ function HomeContent() {
   } as const;
 
   return (
-    <main className="min-h-screen bg-background text-white selection:bg-red-600/50">
+    <main className="min-h-screen bg-background text-slate-900 selection:bg-blue-600/30">
 
       {/* Dynamic Glass Navbar */}
       <motion.nav
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        className="fixed top-0 w-full z-50 glass-sidebar flex items-center px-4 lg:px-10 h-20 justify-between"
+        className="fixed top-0 w-full z-50 glass-sidebar flex items-center px-4 lg:px-10 h-20 justify-between transition-all duration-300"
       >
         <div className="flex items-center gap-6">
           <button
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className="p-2.5 hover:bg-white/5 rounded-xl transition-all active:scale-95"
+            className="p-2.5 hover:bg-slate-100 rounded-xl transition-all active:scale-95"
           >
-            <Menu className="w-6 h-6 text-gray-300" />
+            <Menu className="w-6 h-6 text-slate-600" />
           </button>
 
           <motion.div
@@ -205,28 +208,28 @@ function HomeContent() {
             onClick={() => window.location.reload()}
           >
             <div className="relative w-10 h-10">
-              <div className="absolute inset-0 bg-red-600 blur-lg opacity-40 group-hover:opacity-100 transition-opacity"></div>
+              <div className="absolute inset-0 bg-blue-600 blur-lg opacity-20 group-hover:opacity-50 transition-opacity"></div>
               <img src="/logo.png" alt="Logo" className="relative w-full h-full object-contain logo-glow" />
             </div>
-            <h1 className="text-2xl font-black tracking-tighter">
-              NobarTV<span className="text-red-600">PRO</span>
+            <h1 className="text-2xl font-black tracking-tighter text-slate-900">
+              NobarTV<span className="text-blue-600">PRO</span>
             </h1>
           </motion.div>
         </div>
 
         <div className="flex items-center gap-6">
           <div className="relative hidden md:block w-96">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <input
               type="text" 
               placeholder="Cari hiburanmu di sini..."
-              className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-red-600/50 focus:bg-white/10 transition-all placeholder:text-gray-600"
+              className="w-full bg-slate-100 border border-slate-200 rounded-2xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:bg-white transition-all placeholder:text-slate-500 text-slate-800"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
-          <button onClick={fetchChannels} className="p-3 hover:bg-white/5 rounded-full transition active:rotate-180 duration-500">
-            <RefreshCcw className={`w-5 h-5 text-gray-400 ${loading ? 'animate-spin' : ''}`} />
+          <button onClick={fetchChannels} className="p-3 hover:bg-slate-100 rounded-full transition active:rotate-180 duration-500">
+            <RefreshCcw className={`w-5 h-5 text-slate-500 ${loading ? 'animate-spin' : ''}`} />
           </button>
         </div>
       </motion.nav>
@@ -246,7 +249,7 @@ function HomeContent() {
                 <div className="space-y-8">
                   {/* Quick Filters */}
                   <div>
-                    <h2 className="text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-4 ml-2">Exploration</h2>
+                    <h2 className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-4 ml-2">Exploration</h2>
                     <div className="space-y-1.5">
                       {[
                         { id: 'All', icon: Tv, label: 'Semua Channel' },
@@ -258,11 +261,11 @@ function HomeContent() {
                           onClick={() => setSelectedCategory(cat.id)}
                           className={`w-full group flex items-center justify-between px-4 py-3.5 rounded-2xl transition-all
                             ${selectedCategory === cat.id
-                              ? "bg-red-600 shadow-lg shadow-red-600/20 text-white"
-                              : "text-gray-400 hover:bg-white/5 hover:text-white"}`}
+                              ? "bg-blue-600 shadow-lg shadow-blue-600/20 text-white"
+                              : "text-slate-500 hover:bg-slate-100/50 hover:text-slate-900"}`}
                         >
                           <div className="flex items-center gap-3">
-                            <cat.icon className={`w-5 h-5 ${selectedCategory === cat.id ? "text-white" : "group-hover:text-red-500 transition-colors"}`} />
+                            <cat.icon className={`w-5 h-5 ${selectedCategory === cat.id ? "text-white" : "group-hover:text-blue-600 transition-colors"}`} />
                             <span className="text-sm font-semibold">{cat.label}</span>
                           </div>
                           <ChevronRight className={`w-4 h-4 opacity-0 group-hover:opacity-100 transition-all ${selectedCategory === cat.id ? 'opacity-100' : ''}`} />
@@ -273,7 +276,7 @@ function HomeContent() {
 
                   {/* Dynamic Categories */}
                   <div>
-                    <h2 className="text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-4 ml-2">Kategori</h2>
+                    <h2 className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-4 ml-2">Kategori</h2>
                     <div className="grid grid-cols-1 gap-1.5">
                       {categories.filter(c => !['All', 'Favorites', 'Recent'].includes(c)).map((cat) => (
                         <button
@@ -281,8 +284,8 @@ function HomeContent() {
                           onClick={() => setSelectedCategory(cat)}
                           className={`text-left px-5 py-3 rounded-2xl text-sm transition-all truncate font-medium
                                 ${selectedCategory === cat
-                              ? "bg-white/10 text-white border-l-4 border-red-600 pl-4"
-                              : "text-gray-500 hover:text-gray-300 hover:bg-white/5"}`}
+                              ? "bg-blue-50 text-blue-700 border-l-4 border-blue-600 pl-4 font-bold"
+                              : "text-slate-500 hover:text-slate-800 hover:bg-slate-50"}`}
                         >
                           {cat}
                         </button>
@@ -302,12 +305,11 @@ function HomeContent() {
             {selectedChannel ? (
               <motion.div
                 key="player"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                className="mb-12"
+                initial={false}
+                layout
+                className={`transition-all duration-300 ${isMinimized ? 'minimized-player' : 'mb-12'}`}
               >
-                <div className="relative group rounded-[2.5rem] overflow-hidden bg-black shadow-2xl ring-1 ring-white/10 aspect-video lg:aspect-21/9">
+                <div className={`relative group overflow-hidden bg-black shadow-2xl ring-1 ring-white/10 ${isMinimized ? 'h-full w-full' : 'rounded-[2.5rem] aspect-video lg:aspect-21/9'}`}>
                   <MediaPlayer 
                     title={selectedChannel.name} 
                     src={{ src: selectedChannel.url, type: 'application/x-mpegurl' }}
@@ -322,54 +324,67 @@ function HomeContent() {
                     <DefaultVideoLayout icons={defaultLayoutIcons} />
                   </MediaPlayer>
 
-                  <div className="absolute top-8 left-8 flex gap-3 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
-                    <span className="bg-red-600 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
-                      Live
-                    </span>
-                  </div>
+                  {!isMinimized && (
+                    <div className="absolute top-8 left-8 flex gap-3 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span className="bg-blue-600 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest flex items-center gap-2 text-white">
+                        <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+                        Live
+                      </span>
+                    </div>
+                  )}
 
-                  <button
-                    onClick={() => setSelectedChannel(null)}
-                    className="absolute top-8 right-8 p-3 bg-black/40 hover:bg-red-600 transition-all rounded-full backdrop-blur-xl border border-white/10"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
+                  <div className="absolute top-4 right-4 lg:top-8 lg:right-8 flex gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button
+                      onClick={(e) => { e.stopPropagation(); setIsMinimized(!isMinimized); }}
+                      className="p-3 bg-black/40 hover:bg-blue-600 transition-all rounded-full backdrop-blur-xl border border-white/10 text-white"
+                      title={isMinimized ? "Maximize" : "Minimize"}
+                    >
+                      {isMinimized ? <Maximize2 className="w-4 h-4" /> : <Minimize2 className="w-4 h-4" />}
+                    </button>
+                    <button
+                      onClick={() => { setSelectedChannel(null); setIsMinimized(false); }}
+                      className="p-3 bg-black/40 hover:bg-red-600 transition-all rounded-full backdrop-blur-xl border border-white/10 text-white"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
 
-                <div className="mt-8 flex flex-wrap items-center justify-between gap-6 px-4">
-                  <div className="flex items-center gap-6">
-                    <motion.img
-                      initial={{ rotate: -10, opacity: 0 }}
-                      animate={{ rotate: 0, opacity: 1 }}
-                      src={selectedChannel.logo || "/logo.png"}
-                      className="w-20 h-20 object-contain p-3 bg-white/5 rounded-3xl border border-white/10 shadow-2xl"
-                    />
-                    <div>
-                      <h2 className="text-4xl font-black mb-2 tracking-tight">{selectedChannel.name}</h2>
-                      <div className="flex items-center gap-3 text-gray-400">
-                        <span className="text-sm font-bold px-3 py-1 bg-white/5 rounded-lg border border-white/10">{selectedChannel.group}</span>
-                        <div className="w-1 h-1 rounded-full bg-gray-600"></div>
-                        <span className="text-xs flex items-center gap-1.5"><Play className="w-3 h-3 fill-current" /> Sedang Streaming</span>
+                {!isMinimized && (
+                  <div className="mt-8 flex flex-wrap items-center justify-between gap-6 px-4">
+                    <div className="flex items-center gap-6">
+                      <motion.img
+                        initial={{ rotate: -10, opacity: 0 }}
+                        animate={{ rotate: 0, opacity: 1 }}
+                        src={selectedChannel.logo || "/logo.png"}
+                        className="w-20 h-20 object-contain p-3 bg-white rounded-3xl border border-slate-100 shadow-xl"
+                      />
+                      <div>
+                        <h2 className="text-4xl font-black mb-2 tracking-tight text-slate-800">{selectedChannel.name}</h2>
+                        <div className="flex items-center gap-3 text-slate-500">
+                          <span className="text-sm font-bold px-3 py-1 bg-slate-100 rounded-lg border border-slate-200">{selectedChannel.group}</span>
+                          <div className="w-1 h-1 rounded-full bg-slate-300"></div>
+                          <span className="text-xs flex items-center gap-1.5"><Play className="w-3 h-3 fill-current" /> Sedang Streaming</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="flex items-center gap-4">
-                    <button
-                      onClick={(e) => toggleFavorite(e, selectedChannel.id)}
-                      className={`p-4 rounded-2xl transition-all shadow-xl
-                          ${favorites.includes(selectedChannel.id)
-                          ? "bg-red-600 text-white shadow-red-600/30"
-                          : "bg-white/5 hover:bg-white/10 border border-white/10 text-gray-400 hover:text-white"}`}
-                    >
-                      <Heart className={`w-6 h-6 ${favorites.includes(selectedChannel.id) ? "fill-current" : ""}`} />
-                    </button>
-                    <button className="bg-white text-black px-8 py-4 rounded-2xl font-bold flex items-center gap-3 hover:bg-gray-200 transition-all">
-                      <Info className="w-5 h-5" /> Detail
-                    </button>
+                    <div className="flex items-center gap-4">
+                      <button
+                        onClick={(e) => toggleFavorite(e, selectedChannel.id)}
+                        className={`p-4 rounded-2xl transition-all shadow-xl
+                            ${favorites.includes(selectedChannel.id)
+                            ? "bg-blue-600 text-white shadow-blue-600/30"
+                            : "bg-white hover:bg-slate-50 border border-slate-100 text-slate-400 hover:text-blue-600"}`}
+                      >
+                        <Heart className={`w-6 h-6 ${favorites.includes(selectedChannel.id) ? "fill-current" : ""}`} />
+                      </button>
+                      <button className="bg-slate-900 text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-3 hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/20">
+                        <Info className="w-5 h-5" /> Detail
+                      </button>
+                    </div>
                   </div>
-                </div>
+                )}
               </motion.div>
             ) : (
               /* Spotlight / Hero like Vidio */
@@ -379,12 +394,12 @@ function HomeContent() {
                 className="relative w-full h-[400px] mb-12 rounded-[3rem] overflow-hidden group cursor-pointer"
                 >
                   <img src="https://images.unsplash.com/photo-1593784991095-a205069470b6?auto=format&fit=crop&q=80&w=2000" className="absolute inset-0 w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-1000" />
-                  <div className="absolute inset-0 bg-linear-to-t from-background via-background/40 to-transparent" />
-                  <div className="absolute bottom-12 left-12 max-w-2xl">
-                    <h2 className="text-6xl font-black mb-4 tracking-tighter leading-tight">Nonton TV Sat Gak Pake Ribet.</h2>
-                    <p className="text-xl text-gray-300 mb-8 font-medium">Banyak channel lokal dan internasional terbanyak di kelasnya. Cobain NobarTV PRO sekarang!</p>
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent" />
+                  <div className="absolute bottom-12 left-6 lg:left-12 max-w-2xl px-4 lg:px-0">
+                    <h2 className="text-4xl lg:text-6xl font-black mb-4 tracking-tighter leading-tight text-white">Nonton TV Sat Gak Pake Ribet.</h2>
+                    <p className="text-lg lg:text-xl text-slate-200 mb-8 font-medium">Banyak channel lokal dan internasional terbanyak di kelasnya. Cobain NobarTV PRO sekarang!</p>
                     <div className="flex gap-4">
-                      <button className="bg-red-600 hover:bg-red-700 px-10 py-4 rounded-2xl font-black flex items-center gap-3 transition-all shadow-2xl shadow-red-600/30">
+                      <button className="bg-blue-600 hover:bg-blue-700 px-10 py-4 rounded-2xl font-black flex items-center gap-3 transition-all shadow-2xl shadow-blue-600/30 text-white">
                         <MonitorPlay className="w-6 h-6" /> MULAI NONTON
                       </button>
                     </div>
@@ -397,16 +412,16 @@ function HomeContent() {
           <div className="flex items-center justify-between mb-8 px-2">
             <div>
               <h2 className="text-2xl font-black flex items-center gap-3 tracking-tight lowercase first-letter:uppercase">
-                <span className="w-2 h-8 bg-red-600 rounded-full"></span>
-                {selectedCategory} <span className="text-gray-600 font-medium tracking-normal text-lg">({filteredChannels.length})</span>
+                <span className="w-2 h-8 bg-blue-600 rounded-full"></span>
+                {selectedCategory} <span className="text-slate-400 font-medium tracking-normal text-lg">({filteredChannels.length})</span>
               </h2>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8">
              {loading ? (
                 [...Array(10)].map((_, i) => (
-                  <div key={i} className="aspect-video rounded-[2.5rem] bg-white/5 animate-pulse" />
+                  <div key={i} className="aspect-video rounded-[2.5rem] bg-slate-100 animate-pulse border border-slate-200" />
                 ))
              ) : (
                 filteredChannels.map((channel, idx) => (
@@ -424,25 +439,25 @@ function HomeContent() {
                     className="group premium-card relative aspect-video rounded-[2.5rem] cursor-pointer"
                   >
                     {/* Channel Thumbnail/Logo */}
-                    <div className="absolute inset-0 flex items-center justify-center p-12 bg-[#050505] transition-all duration-700">
+                    <div className="absolute inset-0 flex items-center justify-center p-8 lg:p-12 bg-white transition-all duration-700">
                        {channel.logo ? (
                         <img
                           src={channel.logo}
                           alt={channel.name}
-                          className="w-full h-full object-contain filter grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700"
+                          className="w-full h-full object-contain filter grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700"
                         />
                        ) : (
-                          <span className="text-5xl font-black text-white/10 group-hover:text-red-600/40 transition-colors uppercase">{channel.name.substring(0, 2)}</span>
+                          <span className="text-5xl font-black text-slate-100 group-hover:text-blue-600/20 transition-colors uppercase">{channel.name.substring(0, 2)}</span>
                        )}
                     </div>
                     
                     {/* Hover UI */}
-                    <div className="absolute inset-0 bg-linear-to-t from-black via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
 
                     <div className="absolute top-6 right-6 z-10 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0">
                       <button
                         onClick={(e) => toggleFavorite(e, channel.id)}
-                        className="p-3.5 rounded-2xl bg-white/10 backdrop-blur-2xl text-white hover:bg-red-600 transition-all active:scale-90"
+                        className="p-3.5 rounded-2xl bg-white/10 backdrop-blur-2xl text-white hover:bg-blue-600 transition-all active:scale-90"
                       >
                         <Heart className={`w-5 h-5 ${favorites.includes(channel.id) ? "fill-current" : ""}`} />
                       </button>
@@ -450,14 +465,14 @@ function HomeContent() {
 
                     <div className="absolute bottom-0 left-0 w-full p-8 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
                       <div className="flex items-center gap-2 mb-2 opacity-0 group-hover:opacity-100 transition-all delay-100">
-                        <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse"></span>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-red-500">Streaming Sekarang</span>
+                        <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-blue-400">Streaming Sekarang</span>
                       </div>
-                      <h3 className="text-xl font-bold text-white truncate group-hover:text-red-500 transition-colors">{channel.name}</h3>
-                      <p className="text-xs text-gray-500 font-medium group-hover:text-gray-300 transition-colors">{channel.group}</p>
+                      <h3 className="text-xl font-bold text-white truncate group-hover:text-blue-400 transition-colors">{channel.name}</h3>
+                      <p className="text-xs text-slate-300 font-medium">{channel.group}</p>
                     </div>
 
-                    <div className="absolute inset-x-0 bottom-0 h-1 bg-red-600 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-700" />
+                    <div className="absolute inset-x-0 bottom-0 h-1 bg-blue-600 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-700" />
                   </motion.div>
                 ))
              )}
@@ -468,13 +483,13 @@ function HomeContent() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="flex flex-col items-center justify-center py-40 bg-white/5 rounded-[4rem] border border-white/5 border-dashed"
+              className="flex flex-col items-center justify-center py-40 bg-slate-50 rounded-[4rem] border border-slate-200 border-dashed"
             >
-              <div className="w-24 h-24 bg-red-600/10 rounded-full flex items-center justify-center mb-6">
-                <MonitorPlay className="w-12 h-12 text-red-600" />
+              <div className="w-24 h-24 bg-blue-600/10 rounded-full flex items-center justify-center mb-6">
+                <MonitorPlay className="w-12 h-12 text-blue-600" />
               </div>
-              <h3 className="text-2xl font-black text-gray-400 mb-2">Gak ada channel-nya :(</h3>
-              <p className="text-gray-600 font-medium">Coba ganti kategori atau kata kunci pencarianmu.</p>
+              <h3 className="text-2xl font-black text-slate-400 mb-2">Gak ada channel-nya :(</h3>
+              <p className="text-slate-500 font-medium">Coba ganti kategori atau kata kunci pencarianmu.</p>
             </motion.div>
           )}
 
