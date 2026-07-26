@@ -514,7 +514,7 @@ export default function HomeContent() {
     }
   };
 
-  // Check All Channels Logic (Optimized Batch Processing)
+  // Check All Channels Logic (Optimized Batch Processing via Server)
   const checkAllChannels = async () => {
     if (isCheckingAll) {
       abortControllerRef.current?.abort();
@@ -525,16 +525,24 @@ export default function HomeContent() {
     setIsCheckingAll(true);
     abortControllerRef.current = new AbortController();
 
-    const BATCH_SIZE = 20; // 20 concurrent checks to speed up processing
+    const BATCH_SIZE = 50; // Increased to 50 since server handles concurrency
     let currentChannels = [...channels];
     
     for (let i = 0; i < currentChannels.length; i += BATCH_SIZE) {
       if (abortControllerRef.current?.signal.aborted) break;
 
-      const chunkIndices = [];
+      const chunkIndices: number[] = [];
+      const payloadChannels: any[] = [];
+
       for (let j = 0; j < BATCH_SIZE && i + j < currentChannels.length; j++) {
         if (currentChannels[i + j].status !== 'online') {
           chunkIndices.push(i + j);
+          payloadChannels.push({
+             id: currentChannels[i + j].id,
+             url: currentChannels[i + j].url,
+             userAgent: currentChannels[i + j].userAgent,
+             referrer: currentChannels[i + j].referrer
+          });
           currentChannels[i + j] = { ...currentChannels[i + j], status: 'checking' };
         }
       }
@@ -544,33 +552,42 @@ export default function HomeContent() {
         setChannels([...currentChannels]);
       }
 
-      const promises = chunkIndices.map(async (taskIndex) => {
-        const channel = currentChannels[taskIndex];
-        try {
-          const isAlreadyProxied = channel.url.includes('/api/proxy');
-          let proxyUrl = isAlreadyProxied ? channel.url : `/api/proxy?url=${encodeURIComponent(channel.url)}`;
-          if (!isAlreadyProxied) {
-            if (channel.referrer) proxyUrl += `&referer=${encodeURIComponent(channel.referrer)}`;
-            if (channel.userAgent) proxyUrl += `&userAgent=${encodeURIComponent(channel.userAgent)}`;
+      if (payloadChannels.length > 0) {
+          try {
+            const res = await fetch('/api/check-batch', {
+               method: 'POST',
+               headers: { 'Content-Type': 'application/json' },
+               body: JSON.stringify({ channels: payloadChannels }),
+               signal: abortControllerRef.current.signal
+            });
+
+            if (res.ok) {
+               const data = await res.json();
+               if (data.results) {
+                  // Apply results
+                  data.results.forEach((result: any) => {
+                     const idx = currentChannels.findIndex(c => c.id === result.id);
+                     if (idx !== -1) {
+                         currentChannels[idx] = { ...currentChannels[idx], status: result.status };
+                     }
+                  });
+               }
+            } else {
+               // Fallback if batch fails
+               chunkIndices.forEach(idx => {
+                  currentChannels[idx] = { ...currentChannels[idx], status: 'offline' };
+               });
+            }
+          } catch (e) {
+             // Handle abort or network error
+             chunkIndices.forEach(idx => {
+                currentChannels[idx] = { ...currentChannels[idx], status: 'offline' };
+             });
           }
-
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 4000); // Strict 4s timeout
-
-          const res = await fetch(proxyUrl, { method: 'GET', signal: controller.signal });
-          clearTimeout(timeoutId);
-
-          currentChannels[taskIndex] = { ...channel, status: res.ok ? 'online' : 'offline' };
-        } catch (error) {
-          currentChannels[taskIndex] = { ...channel, status: 'offline' };
-        }
-      });
-
-      // Wait for all channels in this batch to finish checking
-      await Promise.all(promises);
-
-      // Trigger re-render and re-sort only ONCE per batch
-      setChannels([...currentChannels]);
+          
+          // Trigger re-render and re-sort ONCE per batch
+          setChannels([...currentChannels]);
+      }
     }
 
     setIsCheckingAll(false);
