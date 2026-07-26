@@ -2,7 +2,13 @@
   "name": "iptv-generator-monorepo",
   "private": true,
   "scripts": {
-    "build": "echo 'No build for root'",
-    "install": "echo 'No install for root'"
+    "dev": "cd frontend && npm run dev",
+    "build": "cd frontend && npm run build",
+    "postinstall": "cd frontend && npm install",
+    "generate": "node generate.js"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "cheerio": "^1.0.0-rc.12"
   }
 }
