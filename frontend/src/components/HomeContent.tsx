@@ -115,10 +115,18 @@ export default function HomeContent() {
   const containerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowSplash(false);
-    }, 3800);
-    return () => clearTimeout(timer);
+    if (typeof window !== "undefined") {
+      const hasSeenSplash = sessionStorage.getItem("splash_shown");
+      if (hasSeenSplash) {
+        setShowSplash(false);
+      } else {
+        sessionStorage.setItem("splash_shown", "true");
+        const timer = setTimeout(() => {
+          setShowSplash(false);
+        }, 3800);
+        return () => clearTimeout(timer);
+      }
+    }
   }, []);
 
   // Country State
@@ -771,6 +779,8 @@ export default function HomeContent() {
 
         <div className="flex items-center gap-4 lg:gap-6">
           <select
+            aria-label="Pilih Negara"
+            title="Pilih Negara"
             className="hidden lg:block bg-slate-100 hover:bg-slate-200 border-none text-slate-700 text-sm font-semibold rounded-xl focus:ring-2 focus:ring-blue-500 py-2.5 px-4 outline-none max-w-[200px] transition-all cursor-pointer"
             value={selectedCountry}
             onChange={(e) => loadFromCountry(e.target.value)}
@@ -785,6 +795,7 @@ export default function HomeContent() {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <input
               type="text"
+              aria-label="Cari hiburanmu"
               placeholder="Cari hiburanmu..."
               className="w-full bg-slate-100 hover:bg-slate-200/70 border-none rounded-xl py-2.5 pl-11 pr-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all placeholder:text-slate-500 text-slate-800"
               value={search}
@@ -803,7 +814,7 @@ export default function HomeContent() {
             M3U Tools
           </Link>
 
-          <button onClick={fetchChannels} className="p-2.5 hover:bg-slate-100 rounded-xl transition active:rotate-180 duration-500 hidden sm:block">
+          <button onClick={fetchChannels} aria-label="Refresh Data" title="Refresh Channel" className="p-2.5 hover:bg-slate-100 rounded-xl transition active:rotate-180 duration-500 hidden sm:block">
             <RefreshCcw className={`w-5 h-5 text-slate-600 ${loading ? 'animate-spin' : ''}`} />
           </button>
         </div>
@@ -814,6 +825,7 @@ export default function HomeContent() {
         <div className="flex flex-col sm:flex-row gap-3 mb-8 bg-white p-2 rounded-2xl shadow-sm border border-slate-100">
           <input
             type="text"
+            aria-label="Masukkan URL M3U"
             placeholder="Masukkan URL M3U dari negara lain atau paste isi playlist di sini..."
             className="flex-1 bg-transparent px-4 py-3 text-sm font-medium outline-none text-slate-700 placeholder:text-slate-400"
             value={m3uInput}
@@ -927,12 +939,16 @@ export default function HomeContent() {
                 )}
                 <button
                   onClick={(e) => { e.stopPropagation(); setIsMinimized(!isMinimized); }}
+                  aria-label="Toggle Minimize"
+                  title="Minimize Player"
                   className="p-3 bg-black/40 hover:bg-blue-600 transition-all rounded-xl backdrop-blur-md text-white shadow-md"
                 >
                   {isMinimized ? <Maximize2 className="w-4 h-4" /> : <Minimize2 className="w-4 h-4" />}
                 </button>
                 <button
                   onClick={() => { setSelectedChannel(null); setIsMinimized(false); setIsTranslating(false); }}
+                  aria-label="Tutup Player"
+                  title="Tutup Player"
                   className="p-3 bg-black/40 hover:bg-slate-800 transition-all rounded-xl backdrop-blur-md text-white shadow-md"
                 >
                   <X className="w-4 h-4" />
@@ -963,6 +979,8 @@ export default function HomeContent() {
                 <div className="flex items-center gap-4">
                   <button
                     onClick={(e) => toggleFavorite(e, selectedChannel.id)}
+                    aria-label="Simpan ke Favorit"
+                    title="Simpan Favorit"
                     className={`p-4 rounded-xl transition-all shadow-sm border
                         ${favorites.includes(selectedChannel.id)
                         ? "bg-blue-600 text-white border-blue-600"
@@ -1073,6 +1091,7 @@ export default function HomeContent() {
                 <div className="absolute top-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-all duration-200 translate-y-1 group-hover:translate-y-0">
                   <button
                     onClick={(e) => toggleFavorite(e, channel.id)}
+                    aria-label={`Favoritkan ${channel.name}`}
                     className="p-2 rounded-lg bg-white/20 backdrop-blur-md text-white hover:bg-blue-600 transition-colors"
                   >
                     <Heart className={`w-4 h-4 ${favorites.includes(channel.id) ? "fill-current text-white" : ""}`} />
