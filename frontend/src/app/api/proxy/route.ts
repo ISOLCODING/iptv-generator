@@ -18,10 +18,20 @@ export async function GET(req: NextRequest) {
         if (referer) headers['Referer'] = referer;
 
         const isPlaylist = url.includes('.m3u8') || url.includes('.m3u');
+        const isRaw = searchParams.get('raw') === 'true';
 
         if (isPlaylist) {
             const response = await axios.get(url, { headers, responseType: 'text', timeout: 10000 });
             let content = response.data;
+            
+            if (isRaw) {
+                return new NextResponse(content, {
+                    headers: {
+                        'Content-Type': 'text/plain',
+                        'Access-Control-Allow-Origin': '*',
+                    }
+                });
+            }
 
             const lines = content.split('\n');
             const rewritten = lines.map((line: string) => {
