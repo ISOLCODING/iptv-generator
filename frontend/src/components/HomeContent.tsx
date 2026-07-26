@@ -634,9 +634,6 @@ export default function HomeContent() {
   // GSAP Animations
   useGSAP(() => {
     if (hasLoaded) {
-      gsap.fromTo(".nav-bar", { y: -100, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" });
-      gsap.fromTo(".hero-section", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 1, delay: 0.2, ease: "power3.out" });
-      
       // Interactive Scroll Animation for Navbar
       let lastScroll = 0;
       ScrollTrigger.create({
@@ -662,7 +659,7 @@ export default function HomeContent() {
   }, { scope: containerRef, dependencies: [] });
 
   useGSAP(() => {
-    // ScrollTrigger for channel cards
+    // ScrollTrigger for channel cards (This is fine since it triggers on scroll, not on mount above the fold)
     if (visibleChannels.length > 0) {
       const cards = gsap.utils.toArray('.channel-card');
       cards.forEach((card: any) => {
@@ -683,22 +680,6 @@ export default function HomeContent() {
       });
     }
   }, { scope: containerRef, dependencies: [visibleChannels] });
-
-  useGSAP(() => {
-    if (categories.length > 0) {
-      gsap.fromTo('.category-pill', 
-        { opacity: 0, scale: 0.9, y: 10 },
-        { 
-          opacity: 1, 
-          scale: 1, 
-          y: 0,
-          duration: 0.4, 
-          stagger: 0.04, 
-          ease: "back.out(1.5)"
-        }
-      );
-    }
-  }, { scope: containerRef, dependencies: [categories] });
 
   return (
     <main ref={containerRef} className="min-h-screen flex flex-col bg-[#f8fafc] text-slate-900 font-sans">
