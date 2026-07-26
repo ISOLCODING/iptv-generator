@@ -22,7 +22,7 @@ Sekarang Anda bisa menggunakan playlist NobarTV PRO langsung di aplikasi Android
 Gunakan URL di bawah ini untuk aplikasi IPTV Anda:
 
 1. **Link Utama (Vercel - Dengan Proxy):**
-   `https://nobartv.vercel.app/api/playlist` (Terbaik untuk Browser/Web)
+   `https://nobartv-pro.vercel.app/api/playlist` (Terbaik untuk Browser/Web)
 
 2. **Link Backup (GitHub - Statis):**
    `https://raw.githubusercontent.com/ISOLCODING/iptv-generator/master/playlist.m3u` (Terbaik untuk TiviMate/OTT Navigator)

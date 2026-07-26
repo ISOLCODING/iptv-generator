@@ -8,6 +8,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: '/private/',
     },
-    sitemap: 'https://nobartv.vercel.app/sitemap.xml',
+    sitemap: 'https://nobartv-pro.vercel.app/sitemap.xml',
   }
 }

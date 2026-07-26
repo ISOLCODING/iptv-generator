@@ -22,7 +22,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://nobartv.vercel.app"),
+  metadataBase: new URL("https://nobartv-pro.vercel.app"),
   title: {
     default: "NobarTV PRO - Nonton TV Online Indonesia Terlengkap & Gratis",
     template: "%s | NobarTV PRO"
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "NobarTV PRO - Nonton TV Online Indonesia Terlengkap",
     description: "Platform streaming TV Indonesia gratis dan terlengkap. Nikmati siaran langsung berkualitas HD tanpa iklan yang mengganggu.",
-    url: "https://nobartv.vercel.app",
+    url: "https://nobartv-pro.vercel.app",
     siteName: "NobarTV PRO",
     images: [
       {
@@ -93,10 +93,10 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "NobarTV PRO",
-    "url": "https://nobartv.vercel.app",
+    "url": "https://nobartv-pro.vercel.app",
     "potentialAction": {
       "@type": "SearchAction",
-      "target": "https://nobartv.vercel.app/?search={search_term_string}",
+      "target": "https://nobartv-pro.vercel.app/?search={search_term_string}",
       "query-input": "required name=search_term_string"
     }
   };
