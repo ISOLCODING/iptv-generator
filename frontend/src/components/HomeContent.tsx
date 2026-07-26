@@ -722,28 +722,7 @@ export default function HomeContent() {
     }
   }, { scope: containerRef, dependencies: [showSplash] });
 
-  useGSAP(() => {
-    // ScrollTrigger for channel cards
-    if (visibleChannels.length > 0) {
-      const cards = gsap.utils.toArray('.channel-card');
-      cards.forEach((card: any) => {
-        gsap.fromTo(card,
-          { y: 50, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.6,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: card,
-              start: "top 90%",
-              toggleActions: "play none none none",
-            }
-          }
-        );
-      });
-    }
-  }, { scope: containerRef, dependencies: [visibleChannels] });
+  // Removed ScrollTrigger GSAP for channel cards to ensure stability and prevent invisibility
 
   useGSAP(() => {
     if (categories.length > 0) {
@@ -1086,7 +1065,7 @@ export default function HomeContent() {
               <div
                 key={channel.id}
                 onClick={() => handleChannelSelect(channel)}
-                className="channel-card group relative rounded-2xl cursor-pointer overflow-hidden bg-white border border-slate-200 hover:border-blue-500 shadow-sm hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 transform hover:-translate-y-1"
+                className="channel-card h-[220px] group relative rounded-2xl cursor-pointer overflow-hidden bg-white border border-slate-200 hover:border-blue-500 shadow-sm hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 transform hover:-translate-y-1"
               >
                 <div className="absolute inset-0 flex items-center justify-center p-8 bg-white transition-colors duration-300">
                   {channel.logo ? (
