@@ -94,14 +94,35 @@ export default function RootLayout({
 
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "NobarTV PRO",
-    "url": "https://nobartv-pro.vercel.app",
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": "https://nobartv-pro.vercel.app/?search={search_term_string}",
-      "query-input": "required name=search_term_string"
-    }
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "name": "NobarTV PRO",
+        "url": "https://nobartv-pro.vercel.app",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://nobartv-pro.vercel.app/?search={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://nobartv-pro.vercel.app"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "M3U Checker",
+            "item": "https://nobartv-pro.vercel.app/checker"
+          }
+        ]
+      }
+    ]
   };
 
   const softwareAppSchema = {
