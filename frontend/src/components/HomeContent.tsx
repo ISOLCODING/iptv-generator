@@ -740,9 +740,9 @@ export default function HomeContent() {
         </div>
       </nav>
 
-      <div className="pt-28 px-4 lg:px-12 max-w-[1920px] mx-auto pb-32">
+      <div className="w-full pt-28 px-4 lg:px-12 max-w-[1920px] mx-auto pb-32">
         {/* URL Input Bar */}
-        <div className="flex flex-col sm:flex-row gap-3 mb-8 bg-white p-2 rounded-2xl shadow-sm border border-slate-100">
+        <div className="w-full flex flex-col sm:flex-row gap-3 mb-8 bg-white p-2 rounded-2xl shadow-sm border border-slate-100">
           <input
             type="text"
             aria-label="Masukkan URL M3U"
@@ -760,7 +760,7 @@ export default function HomeContent() {
         </div>
 
         {/* Category Pills */}
-        <div className="flex items-center gap-2 overflow-x-auto custom-scrollbar pb-4 mb-8 -mx-4 px-4 lg:mx-0 lg:px-0">
+        <div className="w-full flex items-center gap-2 overflow-x-auto custom-scrollbar pb-4 mb-8 -mx-4 px-4 lg:mx-0 lg:px-0">
           {[
             { id: 'All', icon: Tv, label: 'Semua' },
             { id: 'Favorites', icon: Heart, label: 'Favorit' },
@@ -981,10 +981,18 @@ export default function HomeContent() {
         </div>
 
         {/* Grid GSAP */}
-        <div className="channels-grid grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 lg:gap-6 auto-rows-[220px]">
+        <div className="channels-grid w-full grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 lg:gap-6">
           {loading ? (
             [...Array(12)].map((_, i) => (
-              <div key={i} className="rounded-2xl bg-slate-200 animate-pulse border border-slate-100" />
+              <div key={i} className="h-[220px] w-full rounded-2xl bg-white border border-slate-100 shadow-sm flex flex-col overflow-hidden">
+                <div className="flex-1 bg-slate-50 flex items-center justify-center p-6">
+                   <div className="w-16 h-16 rounded-full bg-slate-200 animate-pulse"></div>
+                </div>
+                <div className="p-4 bg-white flex flex-col gap-3">
+                   <div className="w-3/4 h-4 bg-slate-200 rounded-md animate-pulse"></div>
+                   <div className="w-1/2 h-3 bg-slate-100 rounded-md animate-pulse"></div>
+                </div>
+              </div>
             ))
           ) : (
             visibleChannels.map((channel) => (
