@@ -111,23 +111,7 @@ export default function HomeContent() {
   const [history, setHistory] = useState<string[]>([]);
   const [isMinimized, setIsMinimized] = useState(false);
   const [hasLoaded, setHasLoaded] = useState(false);
-  const [showSplash, setShowSplash] = useState(true);
   const containerRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const hasSeenSplash = sessionStorage.getItem("splash_shown");
-      if (hasSeenSplash) {
-        setShowSplash(false);
-      } else {
-        sessionStorage.setItem("splash_shown", "true");
-        const timer = setTimeout(() => {
-          setShowSplash(false);
-        }, 3800);
-        return () => clearTimeout(timer);
-      }
-    }
-  }, []);
 
   // Country State
   const [selectedCountry, setSelectedCountry] = useState<string>('ID');
@@ -674,39 +658,8 @@ export default function HomeContent() {
   }, { scope: containerRef, dependencies: [hasLoaded] });
 
   useGSAP(() => {
-    if (showSplash) {
-      const tl = gsap.timeline();
-      
-      gsap.set('.splash-logo', { scale: 0.7, opacity: 0, filter: 'blur(10px)' });
-      
-      tl.to('.splash-logo', {
-        scale: 1,
-        opacity: 1,
-        filter: 'blur(0px)',
-        duration: 0.5,
-        ease: 'back.out(1.5)',
-      })
-      .to('.splash-logo', {
-        scale: 1.15,
-        duration: 2.5,
-        ease: 'none',
-      })
-      .to('.splash-logo', {
-        scale: 4,
-        opacity: 0,
-        filter: 'blur(15px)',
-        duration: 0.5,
-        ease: 'power4.in',
-      });
-
-      gsap.to('.splash-bg', {
-        opacity: 0,
-        duration: 0.5,
-        delay: 3.2,
-        ease: 'power2.inOut'
-      });
-    }
-  }, { scope: containerRef, dependencies: [showSplash] });
+    // Only GSAP animation for hero image or layout if needed
+  }, { scope: containerRef, dependencies: [] });
 
   useGSAP(() => {
     // ScrollTrigger for channel cards
@@ -741,8 +694,7 @@ export default function HomeContent() {
           y: 0,
           duration: 0.4, 
           stagger: 0.04, 
-          ease: "back.out(1.5)",
-          delay: 0.8 // Play after splash screen starts finishing
+          ease: "back.out(1.5)"
         }
       );
     }
@@ -750,19 +702,6 @@ export default function HomeContent() {
 
   return (
     <main ref={containerRef} className="min-h-screen flex flex-col bg-[#f8fafc] text-slate-900 font-sans">
-      
-      {/* Netflix-Style Cinematic Splash Screen */}
-      {showSplash && (
-        <div className="splash-bg fixed inset-0 z-[9999] bg-black flex items-center justify-center pointer-events-auto">
-          <div className="flex flex-col items-center justify-center h-full w-full">
-             <div className="splash-logo flex flex-col items-center">
-                <h1 className="text-5xl md:text-8xl font-black tracking-tighter text-white drop-shadow-[0_0_20px_rgba(255,255,255,0.3)]">
-                  NobarTV<span className="text-red-600 drop-shadow-[0_0_25px_rgba(220,38,38,0.7)]">PRO</span>
-                </h1>
-             </div>
-          </div>
-        </div>
-      )}
 
       {/* Modern UI V4 Navbar */}
       <nav className="nav-bar fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 flex items-center px-6 lg:px-12 h-20 justify-between shadow-sm">
