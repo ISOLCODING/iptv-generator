@@ -7,10 +7,16 @@ async function run() {
     try {
         // Fetch all Indonesian channels (ID) from iptv-org
         const playlist = await Antigravity.generatePlaylistFromIptvOrg('ID');
+        
+        const channelCount = playlist.split('#EXTINF').length - 1;
+        if (channelCount <= 0) {
+            throw new Error("No channels found! Aborting playlist generation to prevent overwriting with an empty playlist.");
+        }
+        
         fs.writeFileSync('playlist.m3u', playlist);
-        console.log(`[Generator] Success! Playlist saved with ${playlist.split('#EXTINF').length - 1} channels.`);
+        console.log(`[Generator] Success! Playlist saved with ${channelCount} channels.`);
     } catch (error) {
-        console.error('[Generator] Failed to generate playlist:', error);
+        console.error('[Generator] Failed to generate playlist:', error.message);
         process.exit(1);
     }
 }

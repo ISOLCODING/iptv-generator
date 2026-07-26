@@ -21,7 +21,19 @@ module.exports = new class Antigravity {
     async fetchData(url, label) {
         console.log(`[Antigravity] Fetching ${label}...`);
         try {
-            const response = await axios.get(url, { timeout: this.timeout });
+            const response = await axios.get(url, { 
+                timeout: this.timeout,
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                    'Accept': 'application/json, text/plain, */*'
+                }
+            });
+            
+            if (!Array.isArray(response.data)) {
+                console.error(`[Antigravity] Invalid data received for ${label}. Expected an array, got ${typeof response.data}`);
+                return [];
+            }
+            
             console.log(`[Antigravity] Fetched ${response.data.length} items from ${label}.`);
             return response.data;
         } catch (error) {
