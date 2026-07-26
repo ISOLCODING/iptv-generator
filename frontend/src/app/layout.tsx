@@ -47,14 +47,6 @@ export const metadata: Metadata = {
     description: "Nikmati pengalaman nonton TV online dan live streaming bola gratis dengan server tercepat kualitas Full HD. NobarTV PRO pilihan terbaik hiburan digital Anda.",
     url: "https://nobartv-pro.vercel.app",
     siteName: "NobarTV PRO",
-    images: [
-      {
-        url: "/logo.png",
-        width: 1200,
-        height: 630,
-        alt: "NobarTV PRO Preview",
-      },
-    ],
     locale: "id_ID",
     type: "website",
   },
@@ -62,7 +54,6 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "NobarTV PRO - Live Streaming Bola & TV Indonesia",
     description: "Akses siaran langsung TV Indonesia dan pertandingan bola favoritmu secara gratis dalam resolusi HD. Nonton di mana saja dan kapan saja!",
-    images: ["/logo.png"],
     creator: "@nobartv",
   },
   icons: {
