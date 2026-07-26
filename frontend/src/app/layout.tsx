@@ -24,14 +24,17 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL("https://nobartv-pro.vercel.app"),
   title: {
-    default: "NobarTV PRO - Nonton TV Online Indonesia Terlengkap & Gratis",
-    template: "%s | NobarTV PRO"
+    default: "NobarTV PRO - Nonton TV Online & Live Streaming Bola Gratis",
+    template: "%s | NobarTV PRO - TV Online Indonesia"
   },
-  description: "Streaming TV Online Indonesia terlengkap kualitas HD tanpa buffering. Nonton RCTI, SCTV, Indosiar, Trans7, TransTV, ANTV, MNCTV secara live dan gratis.",
+  description: "Nonton TV online Indonesia dan live streaming bola gratis kualitas HD tanpa buffering. NobarTV PRO sediakan siaran langsung RCTI, SCTV, Indosiar, MNC TV, Trans7, Liga 1, hingga Timnas terlengkap.",
   keywords: [
     "tv online", "streaming tv", "nonton tv gratis", "iptv indonesia", "nobartv",
-    "rcti streaming", "sctv streaming", "indosiar online", "video player",
-    "live streaming bola", "tv indonesia online", "aplikasi nonton tv"
+    "nobartv pro", "live streaming bola", "streaming timnas indonesia", "nobar bola",
+    "rcti streaming", "sctv online", "indosiar live", "mnc tv streaming",
+    "nonton liga 1", "piala asia", "yandex bola", "tv digital online", 
+    "m3u8 player indonesia", "iptv gratis 2024", "siaran langsung bola",
+    "aplikasi nonton tv", "streaming anime", "film indonesia"
   ],
   authors: [{ name: "NobarTV Team" }],
   creator: "NobarTV PRO",
@@ -40,8 +43,8 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "NobarTV PRO - Nonton TV Online Indonesia Terlengkap",
-    description: "Platform streaming TV Indonesia gratis dan terlengkap. Nikmati siaran langsung berkualitas HD tanpa iklan yang mengganggu.",
+    title: "NobarTV PRO - TV Online & Live Streaming Sepakbola Terlengkap",
+    description: "Nikmati pengalaman nonton TV online dan live streaming bola gratis dengan server tercepat kualitas Full HD. NobarTV PRO pilihan terbaik hiburan digital Anda.",
     url: "https://nobartv-pro.vercel.app",
     siteName: "NobarTV PRO",
     images: [
@@ -57,8 +60,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "NobarTV PRO - Streaming TV Indonesia Gratis",
-    description: "Nonton TV Indonesia gratis kualitas HD. Akses ribuan channel sekarang!",
+    title: "NobarTV PRO - Live Streaming Bola & TV Indonesia",
+    description: "Akses siaran langsung TV Indonesia dan pertandingan bola favoritmu secara gratis dalam resolusi HD. Nonton di mana saja dan kapan saja!",
     images: ["/logo.png"],
     creator: "@nobartv",
   },
