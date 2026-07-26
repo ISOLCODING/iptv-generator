@@ -22,7 +22,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://nobartvgratis.afasya.com"),
+  metadataBase: new URL("https://nobartv.vercel.app"),
   title: {
     default: "NobarTV PRO - Nonton TV Online Indonesia Terlengkap & Gratis",
     template: "%s | NobarTV PRO"
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "NobarTV PRO - Nonton TV Online Indonesia Terlengkap",
     description: "Platform streaming TV Indonesia gratis dan terlengkap. Nikmati siaran langsung berkualitas HD tanpa iklan yang mengganggu.",
-    url: "https://nobartvgratis.afasya.com",
+    url: "https://nobartv.vercel.app",
     siteName: "NobarTV PRO",
     images: [
       {
@@ -93,10 +93,10 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "NobarTV PRO",
-    "url": "https://nobartvgratis.afasya.com",
+    "url": "https://nobartv.vercel.app",
     "potentialAction": {
       "@type": "SearchAction",
-      "target": "https://nobartvgratis.afasya.com/?search={search_term_string}",
+      "target": "https://nobartv.vercel.app/?search={search_term_string}",
       "query-input": "required name=search_term_string"
     }
   };
