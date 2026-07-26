@@ -115,7 +115,7 @@ export default async function Image() {
               color: '#f8fafc',
             }}
           >
-            Nonton TV Dimana Aja,<br /> Kapan Aja, Gratis
+            Streaming TV &<br /> Sepakbola Nasional
           </h2>
           
           {/* Description */}
@@ -129,7 +129,7 @@ export default async function Image() {
               maxWidth: '90%',
             }}
           >
-            Nikmati akses streaming berbagai tayangan hiburan favorit secara langsung dari browser Anda tanpa biaya langganan.
+            Saksikan ratusan channel eksklusif dan siaran langsung Liga 1 secara gratis langsung dari browser Anda dengan resolusi 4K.
           </p>
 
           {/* Badges Container */}

@@ -706,7 +706,7 @@ export default function HomeContent() {
   }, { scope: containerRef, dependencies: [showSplash] });
 
   useGSAP(() => {
-    // ScrollTrigger for channel cards (This is fine since it triggers on scroll, not on mount above the fold)
+    // ScrollTrigger for channel cards
     if (visibleChannels.length > 0) {
       const cards = gsap.utils.toArray('.channel-card');
       cards.forEach((card: any) => {
@@ -728,8 +728,24 @@ export default function HomeContent() {
     }
   }, { scope: containerRef, dependencies: [visibleChannels] });
 
+  useGSAP(() => {
+    if (categories.length > 0) {
+      gsap.fromTo('.category-pill',
+        { opacity: 0, scale: 0.9, y: 10 },
+        {
+          opacity: 1,
+          scale: 1,
+          y: 0,
+          duration: 0.4,
+          stagger: 0.04,
+          ease: "back.out(1.5)"
+        }
+      );
+    }
+  }, { scope: containerRef, dependencies: [categories] });
+
   return (
-    <main ref={containerRef} className="w-full min-h-screen flex flex-col bg-[#f8fafc] text-slate-900 font-sans overflow-x-hidden">
+    <main ref={containerRef} className="min-h-screen flex flex-col bg-[#f8fafc] text-slate-900 font-sans">
       
       {/* Netflix-Style Cinematic Splash Screen */}
       {showSplash && (
@@ -800,7 +816,7 @@ export default function HomeContent() {
         </div>
       </nav>
 
-      <div className="w-full pt-28 px-4 lg:px-12 max-w-[1920px] mx-auto pb-32">
+      <div className="pt-28 px-4 lg:px-12 max-w-[1920px] mx-auto pb-32">
         {/* URL Input Bar */}
         <div className="w-full flex flex-col sm:flex-row gap-3 mb-8 bg-white p-2 rounded-2xl shadow-sm border border-slate-100">
           <input
@@ -919,16 +935,12 @@ export default function HomeContent() {
                 )}
                 <button
                   onClick={(e) => { e.stopPropagation(); setIsMinimized(!isMinimized); }}
-                  aria-label="Toggle Minimize"
-                  title="Minimize Player"
                   className="p-3 bg-black/40 hover:bg-blue-600 transition-all rounded-xl backdrop-blur-md text-white shadow-md"
                 >
                   {isMinimized ? <Maximize2 className="w-4 h-4" /> : <Minimize2 className="w-4 h-4" />}
                 </button>
                 <button
                   onClick={() => { setSelectedChannel(null); setIsMinimized(false); setIsTranslating(false); }}
-                  aria-label="Tutup Player"
-                  title="Tutup Player"
                   className="p-3 bg-black/40 hover:bg-slate-800 transition-all rounded-xl backdrop-blur-md text-white shadow-md"
                 >
                   <X className="w-4 h-4" />
@@ -959,8 +971,6 @@ export default function HomeContent() {
                 <div className="flex items-center gap-4">
                   <button
                     onClick={(e) => toggleFavorite(e, selectedChannel.id)}
-                    aria-label="Simpan ke Favorit"
-                    title="Simpan Favorit"
                     className={`p-4 rounded-xl transition-all shadow-sm border
                         ${favorites.includes(selectedChannel.id)
                         ? "bg-blue-600 text-white border-blue-600"
@@ -1079,7 +1089,6 @@ export default function HomeContent() {
                 <div className="absolute top-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-all duration-200 translate-y-1 group-hover:translate-y-0">
                   <button
                     onClick={(e) => toggleFavorite(e, channel.id)}
-                    aria-label={`Favoritkan ${channel.name}`}
                     className="p-2 rounded-lg bg-white/20 backdrop-blur-md text-white hover:bg-blue-600 transition-colors"
                   >
                     <Heart className={`w-4 h-4 ${favorites.includes(channel.id) ? "fill-current text-white" : ""}`} />
