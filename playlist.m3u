@@ -188,6 +188,8 @@ https://dutatv.siar.us/dutatv/live/playlist.m3u8
 #EXTINF:-1 tvg-id="EfarinaTV.id" tvg-name="Efarina TV" tvg-logo="https://i.imgur.com/iYTimXh.png" group-title="general",Efarina TV
 #EXTVLCOPT:http-referrer=https://live.efarinatv.net/
 https://live.efarinatv.com/hls/bgtaufikganteng.m3u8
+#EXTINF:-1 tvg-id="EInternational.id" tvg-name="E International" tvg-logo="https://hosting.renderforestsites.com/35126779/1659328/media/1058391c8059a0d092426e145d55951b.png" group-title="general",E International
+https://vodcdn.bamboo-cloud.com/livehls/69a123b780c99d28cc0f0016/master.m3u8
 #EXTINF:-1 tvg-id="ElshintaTV.id" tvg-name="Elshinta TV" tvg-logo="https://i.imgur.com/x5uoy2H.png" group-title="general",Elshinta TV
 https://ams.juraganstreaming.com:5443/LiveApp/streams/elshintatv.m3u8
 #EXTINF:-1 tvg-id="ElshintaTV.id" tvg-name="Elshinta TV" tvg-logo="https://i.imgur.com/x5uoy2H.png" group-title="general",Elshinta TV
