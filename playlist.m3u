@@ -38,6 +38,8 @@ https://ott-balancer.tvri.go.id/live/eds/Nasional/hls/Nasional.m3u8
 https://afbtv.siar.us/live/afbtv.m3u8
 #EXTINF:-1 tvg-id="AhsanTV.id" tvg-name="Ahsan TV" tvg-logo="https://i.imgur.com/dZdUbYd.png" group-title="religious",Ahsan TV
 https://5bf7b725107e5.streamlock.net/ahsantv/ahsantv/playlist.m3u8
+#EXTINF:-1 tvg-id="AjwaTV.id" tvg-name="Ajwa TV" tvg-logo="https://i.imgur.com/JXjbUhB.png" group-title="general",Ajwa TV
+http://ikitv.sqn.at:8000/play/a00j/index.m3u8
 #EXTINF:-1 tvg-id="AKTV.id" tvg-name="AKTV" tvg-logo="https://i.imgur.com/DUY5WXf.png" group-title="general",AKTV
 #EXTVLCOPT:http-referrer=https://aktvuhfdigital.tv/Livestream/aktv
 https://akativi.siar.us/live/akativi.m3u8
@@ -93,9 +95,7 @@ https://flv.intechmedia.net/live/ch112.m3u8
 #EXTINF:-1 tvg-id="BNChannel.id" tvg-name="BN Channel" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/BN_Channel.png/960px-BN_Channel.png" group-title="news",BN Channel
 http://175.158.57.130:8888/stream/channelid/1402218159
 #EXTINF:-1 tvg-id="BNChannel.id" tvg-name="BN Channel" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/BN_Channel.png/960px-BN_Channel.png" group-title="news",BN Channel
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 Windows NT 10.0; Win64; x64 AppleWebKit/537.36 KHTML, like Gecko Chrome/144.0.0.0 Safari/537.36
-#EXTVLCOPT:http-referrer=https://www.dens.tv/
-https://op-group1-swiftservehd-1.dens.tv/h/h39/index.m3u8
+http://ikitv.sqn.at:8000/play/a01l/index.m3u8
 #EXTINF:-1 tvg-id="BRTV.id" tvg-name="BRTV" tvg-logo="https://upload.wikimedia.org/wikipedia/id/1/1f/Logo_BRTV.png" group-title="Uncategorized",BRTV
 https://5bf7b725107e5.streamlock.net/brtv/brtv/playlist.m3u8
 #EXTINF:-1 tvg-id="BTV.id" tvg-name="BTV" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/BTV_%28Indonesia%29_logo_%282025%29.svg/960px-BTV_%28Indonesia%29_logo_%282025%29.svg.png" group-title="news",BTV
@@ -203,8 +203,6 @@ https://61146e7ab7a66.streamlock.net:8089/tes/1/chunklist.m3u8
 https://tvstreamcast.com/indonesiana.m3u8
 #EXTINF:-1 tvg-id="iNews.id" tvg-name="iNews" tvg-logo="https://i.imgur.com/M2R3lfg.png" group-title="news",iNews
 https://mncmedia.malingtv.workers.dev/inews.m3u8
-#EXTINF:-1 tvg-id="IzzahTV.id" tvg-name="Izzah TV" tvg-logo="https://i.imgur.com/my7aqLc.png" group-title="religious",Izzah TV
-https://streaming.radiosalamjambi.com/izzahtv.m3u8
 #EXTINF:-1 tvg-id="JakTV.id" tvg-name="Jak TV" tvg-logo="https://i.imgur.com/xyLLLOi.png" group-title="Uncategorized",Jak TV
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 Windows NT 10.0; Win64; x64 AppleWebKit/537.36 KHTML, like Gecko Chrome/144.0.0.0 Safari/537.36
 #EXTVLCOPT:http-referrer=https://www.dens.tv/
@@ -220,6 +218,8 @@ http://27.124.81.245:1935/jektv/myStream/playlist.m3u8
 http://103.255.15.222:1935/tv/jitv_720p/playlist.m3u8
 #EXTINF:-1 tvg-id="JogjaTV.id" tvg-name="Jogja TV" tvg-logo="https://static.wikia.nocookie.net/logopedia/images/4/40/Jogjatvnew.png" group-title="general",Jogja TV
 https://stream.jogjatv.co.id/jtvlive/stream/index.m3u8
+#EXTINF:-1 tvg-id="JTV.id" tvg-name="JTV" tvg-logo="https://i.imgur.com/mIDWIQk.png" group-title="general",JTV
+http://122.248.43.242:1935/JTVKEDIRI/_definst_/myStream/playlist.m3u8
 #EXTINF:-1 tvg-id="JTV.id" tvg-name="JTV" tvg-logo="https://i.imgur.com/mIDWIQk.png" group-title="general",JTV
 http://122.248.43.242:1935/JTVMADIUN/_definst_/myStream/playlist.m3u8
 #EXTINF:-1 tvg-id="JTV.id" tvg-name="JTV" tvg-logo="https://i.imgur.com/mIDWIQk.png" group-title="general",JTV
@@ -245,8 +245,6 @@ https://op-group1-swiftservehd-1.dens.tv/s/s104/index.m3u8
 #EXTINF:-1 tvg-id="KTV.id" tvg-name="KTV" tvg-logo="https://i.imgur.com/j3wtaDc.png" group-title="general",KTV
 #EXTVLCOPT:http-referrer=https://youtv.live/
 https://flv.intechmedia.net/live/ch118.m3u8
-#EXTINF:-1 tvg-id="KTV.id" tvg-name="KTV" tvg-logo="https://i.imgur.com/j3wtaDc.png" group-title="general",KTV
-http://103.66.62.83:8000/play/a04s/index.m3u8
 #EXTINF:-1 tvg-id="LingkarTV.id" tvg-name="Lingkar TV" tvg-logo="https://lingkartv.com/assets/img/logo-square.png" group-title="news",Lingkar TV
 https://lingkartv.my.id/hls/lingkartv.m3u8
 #EXTINF:-1 tvg-id="MadaniTV.id" tvg-name="Madani TV" tvg-logo="https://i.imgur.com/8aonQ0v.png" group-title="religious",Madani TV
@@ -269,12 +267,10 @@ https://stream.convergen.co/mbg_stream/smil:mbStream.smil/playlist.m3u8
 https://wahyu1ptv.pages.dev/MDTV-HD.m3u8
 #EXTINF:-1 tvg-id="MDTV.id" tvg-name="MDTV" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/MDTV_logo.svg/960px-MDTV_logo.svg.png" group-title="Uncategorized",MDTV
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 Windows NT 10.0; Win64; x64 AppleWebKit/537.36 KHTML, like Gecko Chrome/144.0.0.0 Safari/537.36
-#EXTVLCOPT:http-referrer=https://www.dens.tv/
-https://op-group1-swiftservehd-1.dens.tv/h/h223/index.m3u8
+#EXTVLCOPT:http-referrer=dens.tv/tv-local
+https://op-flashcon-digdayahd-1.dens.tv/h/h223/index.m3u8
 #EXTINF:-1 tvg-id="MDTV.id" tvg-name="MDTV" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/MDTV_logo.svg/960px-MDTV_logo.svg.png" group-title="Uncategorized",MDTV
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 Windows NT 10.0; Win64; x64 AppleWebKit/537.36 KHTML, like Gecko Chrome/144.0.0.0 Safari/537.36
-#EXTVLCOPT:http-referrer=https://www.dens.tv/
-https://op-group1-swiftservesd-1.dens.tv/h/h06/index.m3u8
+http://ikitv.sqn.at:8000/play/a044/index.m3u8
 #EXTINF:-1 tvg-id="MetroTV.id" tvg-name="Metro TV" tvg-logo="https://i.imgur.com/QnU70NI.png" group-title="news",Metro TV
 https://edge.medcom.id/live-edge/smil:metro.smil/playlist.m3u8
 #EXTINF:-1 tvg-id="MGITV.id" tvg-name="MGI TV" tvg-logo="https://i.imgur.com/xrNtabe.png" group-title="religious",MGI TV
@@ -362,7 +358,8 @@ https://op-group1-swiftservehd-1.dens.tv/h/h233/index.m3u8
 #EXTINF:-1 tvg-id="RRINet.id" tvg-name="RRI Net" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/RRI_NET_2023.svg/960px-RRI_NET_2023.svg.png" group-title="Uncategorized",RRI Net
 https://private-streaming.rri.go.id/memfs/6f77c7b5-feb2-4935-9f89-e7e9fca0a54a_output_0.m3u8
 #EXTINF:-1 tvg-id="SalamTV.id" tvg-name="Salam TV" tvg-logo="https://i.imgur.com/00Ifzgo.png" group-title="Uncategorized",Salam TV
-https://salamtv.siar.us/live/salamtv.m3u8
+#EXTVLCOPT:http-referrer=salamtelevisi.com
+https://live.salamtelevisi.com/hls/0/stream.m3u8
 #EXTINF:-1 tvg-id="SaliraTV.id" tvg-name="Salira TV" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/6/6b/Logo_Salira_TV.png" group-title="culture",Salira TV
 https://live.salira.tv/p/3870/hybrid/play.m3u8
 #EXTINF:-1 tvg-id="SaliraTV.id" tvg-name="Salira TV" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/6/6b/Logo_Salira_TV.png" group-title="culture",Salira TV
@@ -376,6 +373,9 @@ https://cdn.adyadigitalteknologi.com:8090/vod/relay.m3u8
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 Windows NT 10.0; Win64; x64 AppleWebKit/537.36 KHTML, like Gecko Chrome/144.0.0.0 Safari/537.36
 #EXTVLCOPT:http-referrer=https://www.dens.tv/
 https://op-group1-swiftservehd-1.dens.tv/h/h217/index.m3u8
+#EXTINF:-1 tvg-id="SelaparangTV.id" tvg-name="Selaparang TV" tvg-logo="https://upload.wikimedia.org/wikipedia/id/c/ce/Logo_Selaparang_TV.png" group-title="Uncategorized",Selaparang TV
+#EXTVLCOPT:http-referrer=selaparangtv.net
+https://selaparangtv.siar.us/live/selaparangtv.m3u8
 #EXTINF:-1 tvg-id="SemarangTV.id" tvg-name="Semarang TV" tvg-logo="https://i.imgur.com/KFC2WSB.png" group-title="Uncategorized",Semarang TV
 http://116.254.112.74/hls/cakralive.m3u8
 #EXTINF:-1 tvg-id="Simpang5TV.id" tvg-name="Simpang5 TV" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/d/dc/Simpang5_TV.png" group-title="Uncategorized",Simpang5 TV
@@ -415,6 +415,8 @@ http://122.248.43.242:1935/SAMARINDATV/_definst_/myStream/playlist.m3u8
 http://122.248.43.242:1935/SULTRATV/_definst_/myStream/playlist.m3u8
 #EXTINF:-1 tvg-id="SurauTV.id" tvg-name="Surau TV" tvg-logo="https://i.imgur.com/CKoxcWL.png" group-title="Uncategorized",Surau TV
 https://wahyu1ptv.pages.dev/SurauTV-HD.m3u8
+#EXTINF:-1 tvg-id="SurauTV.id" tvg-name="Surau TV" tvg-logo="https://i.imgur.com/CKoxcWL.png" group-title="Uncategorized",Surau TV
+http://ikitv.sqn.at:8000/play/a00l/index.m3u8
 #EXTINF:-1 tvg-id="TATV.id" tvg-name="TATV" tvg-logo="https://i.imgur.com/1f0EC7t.png" group-title="Uncategorized",TATV
 https://v2.siar.us/tatv/live.sdp/playlist.m3u8
 #EXTINF:-1 tvg-id="TegarTVLampung.id" tvg-name="Tegar TV Lampung" tvg-logo="https://i.imgur.com/0Vp3f2J.png" group-title="Uncategorized",Tegar TV Lampung
@@ -517,11 +519,9 @@ https://srs.u-channel.tv/live/uchannel-tv.m3u8
 #EXTINF:-1 tvg-id="UGTV.id" tvg-name="UGTV" tvg-logo="https://i.imgur.com/iEKDH26.png" group-title="Uncategorized",UGTV
 https://cdn.gunadarma.ac.id/streams/ugtv/ingestugtv.m3u8
 #EXTINF:-1 tvg-id="VTV.id" tvg-name="VTV" tvg-logo="https://i.postimg.cc/cJRJr3BR/2560px-VTV-Indonesia-White-2023-svg.png" group-title="kids",VTV
-http://103.66.62.83:8000/play/a00c/index.m3u8
+http://ikitv.sqn.at:8000/play/a023/index.m3u8
 #EXTINF:-1 tvg-id="VTV.id" tvg-name="VTV" tvg-logo="https://i.postimg.cc/cJRJr3BR/2560px-VTV-Indonesia-White-2023-svg.png" group-title="kids",VTV
 #EXTVLCOPT:http-referrer=https://youtv.live/
 https://flv.intechmedia.net/live/ch107.m3u8
-#EXTINF:-1 tvg-id="WesalTV.id" tvg-name="Wesal TV" tvg-logo="https://i.imgur.com/Uv8RWks.png" group-title="Uncategorized",Wesal TV
-https://ams.juraganstreaming.com:5443/LiveApp/streams/wesaltv.m3u8
 #EXTINF:-1 tvg-id="YOYInternational.id" tvg-name="YOY International" tvg-logo="https://hosting.renderforestsites.com/35126779/1657983/media/3ed50b4273b16759c16450206bec0196.png" group-title="general",YOY International
 https://gist.githubusercontent.com/iptvonlinetv/8a6b2f12e5e968537378f1245cea02c9/raw/78bf84476f8e24cc8ea9d5ac24855078c61b18db/udp305.575.530:3030.m3u8
