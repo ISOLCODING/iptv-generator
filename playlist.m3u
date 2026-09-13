@@ -409,6 +409,9 @@ https://parahyangan.staratv.id/hls/0/stream.m3u8
 https://stream.staratv.id/hls/0/stream.m3u8
 #EXTINF:-1 tvg-id="STV.id" tvg-name="STV" tvg-logo="https://i.imgur.com/EIrXgT8.png" group-title="Uncategorized",STV
 http://122.248.43.242:1935/SAMARINDATV/_definst_/myStream/playlist.m3u8
+#EXTINF:-1 tvg-id="SuaraSurabayaVisualRadio.id" tvg-name="Suara Surabaya Visual Radio" tvg-logo="https://upload.wikimedia.org/wikipedia/id/f/f8/Suara_Surabaya.svg" group-title="news",Suara Surabaya Visual Radio
+#EXTVLCOPT:http-referrer=https://www.suarasurabaya.net/
+https://ssfm.siar.us/ssfm/live/playlist.m3u8
 #EXTINF:-1 tvg-id="SultraTV.id" tvg-name="Sultra TV" tvg-logo="https://i.imgur.com/cmpbNJz.png" group-title="Uncategorized",Sultra TV
 http://122.248.43.242:1935/SULTRATV/_definst_/myStream/playlist.m3u8
 #EXTINF:-1 tvg-id="SurauTV.id" tvg-name="Surau TV" tvg-logo="https://i.imgur.com/CKoxcWL.png" group-title="Uncategorized",Surau TV
