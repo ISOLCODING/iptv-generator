@@ -283,8 +283,6 @@ https://tv.rodja.live/tasik/ngrp:mgitv_all/playlist.m3u8
 #EXTVLCOPT:http-referrer=https://mgstv.co.id/live-streaming/
 https://mgstv.siar.us/live/mgstv.m3u8
 #EXTINF:-1 tvg-id="MNCTV.id" tvg-name="MNCTV" tvg-logo="https://i.imgur.com/SK8pjQy.png" group-title="general",MNCTV
-https://mncmedia.malingtv.workers.dev/mnctv.m3u8
-#EXTINF:-1 tvg-id="MNCTV.id" tvg-name="MNCTV" tvg-logo="https://i.imgur.com/SK8pjQy.png" group-title="general",MNCTV
 http://202.150.172.59/MNCTV/tracks-v1a1/mono.m3u8
 #EXTINF:-1 tvg-id="Moji.id" tvg-name="Moji" tvg-logo="https://i.imgur.com/mM9zapJ.png" group-title="general",Moji
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 Windows NT 10.0; Win64; x64 AppleWebKit/537.36 KHTML, like Gecko Chrome/144.0.0.0 Safari/537.36
