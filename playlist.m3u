@@ -212,8 +212,6 @@ https://tvstreamcast.com/indonesiana.m3u8
 http://202.150.172.59/Indosiar/index.m3u8
 #EXTINF:-1 tvg-id="iNews.id" tvg-name="iNews" tvg-logo="https://i.imgur.com/M2R3lfg.png" group-title="news",iNews
 https://mncmedia.malingtv.workers.dev/inews.m3u8
-#EXTINF:-1 tvg-id="iNews.id" tvg-name="iNews" tvg-logo="https://i.imgur.com/M2R3lfg.png" group-title="news",iNews
-http://202.150.172.59/iNews/index.m3u8
 #EXTINF:-1 tvg-id="JakTV.id" tvg-name="Jak TV" tvg-logo="https://i.imgur.com/xyLLLOi.png" group-title="Uncategorized",Jak TV
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 Windows NT 10.0; Win64; x64 AppleWebKit/537.36 KHTML, like Gecko Chrome/144.0.0.0 Safari/537.36
 #EXTVLCOPT:http-referrer=https://www.dens.tv/
